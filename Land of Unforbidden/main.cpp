@@ -50,6 +50,7 @@ int main()
 //**** My Functions ****
 
 // BEGIN CHECK FOR DEAD
+void checkForDead(){
     if(GLOBAL_charDead != 'N'){
         exit(0);
     }

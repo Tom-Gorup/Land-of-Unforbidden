@@ -7,6 +7,7 @@
 #include <ctime>
 #include <string>
 #include <ctype.h>
+#include <cstdlib>
 
 using namespace std;
 
@@ -32,6 +33,8 @@ char whichDirection(char);      //Pick the direction
 int charAttack(int, int);       //Character Attack
 void flee();                    //Fleeing health reduction
 void firstFight(char);          //First fight
+string randomItem();            //Random Item
+void checkForDead();
 
 int main()
 {
@@ -40,18 +43,60 @@ int main()
         cout << "The path of the " << GLOBAL_strCharacterType << " is a unique path.  " << GLOBAL_characterName << ", you have been selected to..." << endl;
         GLOBAL_temporary = beginPath();
         firstFight(GLOBAL_temporary);
-    
+        checkForDead();     //checks for death after fight
     return 0;
 }
 
 //**** My Functions ****
 
-// BEGIN RANDOM ITEM
+// BEGIN CHECK FOR DEAD
+    if(GLOBAL_charDead != 'N'){
+        exit(0);
+    }
+}
+// END CHECK FOR DEAD
 
+// BEGIN RANDOM ITEM
+string randomItem(){
+    int randItemNumber          = 0.0;
+    string randomItemReturn     = "";
+    
+    srand(static_cast<int>(time(0)));
+    randItemNumber = 1 + rand() % (5 - 1 + 1);
+    
+    switch (randItemNumber) {
+        case 1:
+            randomItemReturn = "a Hammer";
+            cout << "You have earned " << randomItemReturn << endl;
+            break;
+        case 2:
+            randomItemReturn = "a Sword";
+            cout << "You have earned " << randomItemReturn << endl;
+            break;
+        case 3:
+            randomItemReturn = "+5 Health";
+            GLOBAL_charHealth += 5;
+            cout << "You have earned " << randomItemReturn << "." << endl;
+            cout << "Your health is now " << GLOBAL_charHealth;
+            break;
+        case 4:
+            randomItemReturn = "a Bow";
+            cout << "You have earned " << randomItemReturn << endl;
+            break;
+        case 5:
+            randomItemReturn = "some Vasoline";
+            cout << "You have earned " << randomItemReturn << endl;
+            break;
+        default:
+            break;
+    }
+    
+    return randomItemReturn;
+}
 // END RANDOM ITEM
 
 // BEGIN FIRST ATTACK
-void firstFight(char attackFlee){
+void firstFight(char attackFlee){    
     if(attackFlee == 'F'){
         flee();
     }
@@ -75,7 +120,8 @@ void firstFight(char attackFlee){
                     GLOBAL_charDead = 'Y';
                 }
                 else{
-                    cout << "You have killed the Butterfly and earned ..." << endl;
+                    cout << "You have killed the Butterfly.  ";
+                    randomItem();
                     GLOBAL_enemyHealth = 100;
                 }
                 break;
@@ -97,7 +143,8 @@ void firstFight(char attackFlee){
                     GLOBAL_charDead = 'Y';
                 }
                 else{
-                    cout << "You have killed the Wolf and earned ..." << endl;
+                    cout << "You have killed the Wolf.  ";
+                    randomItem();
                     GLOBAL_enemyHealth = 100;
                 }
                 break;
@@ -119,7 +166,8 @@ void firstFight(char attackFlee){
                     GLOBAL_charDead = 'Y';
                 }
                 else{
-                    cout << "You have killed the Witch and earned ..." << endl;
+                    cout << "You have killed the Witch.  ";
+                    randomItem();
                     GLOBAL_enemyHealth = 100;
                 }
                 break;
@@ -141,7 +189,8 @@ void firstFight(char attackFlee){
                     GLOBAL_charDead = 'Y';
                 }
                 else{
-                    cout << "You have killed the Yeti and earned ..." << endl;
+                    cout << "You have killed the Yeti.  ";
+                    randomItem();
                     GLOBAL_enemyHealth = 100;
                 }
                 break;
@@ -179,12 +228,14 @@ char beginPath(){
     char charAttackFlee     = ' ';
 
     do{
-    cout << "The path begins here, head North, South, West, or East? ";
-    cin >> direction;
-    charDirection = returnChar(direction);
-    charDirection = whichDirection(charDirection);
-    GLOBAL_pathDirection = charDirection;
-    
+        do{
+        cout << "The path begins here, head North, South, West, or East? ";
+        cin >> direction;
+        charDirection = returnChar(direction);
+        charDirection = whichDirection(charDirection);
+        GLOBAL_pathDirection = charDirection;
+        }   while((GLOBAL_pathDirection != 'N') && (GLOBAL_pathDirection != 'S') && (GLOBAL_pathDirection != 'W') && (GLOBAL_pathDirection != 'E'));
+            
     cout << "Attack or Flee? ";
     cin >> attackFlee;
     charAttackFlee = returnChar(attackFlee);

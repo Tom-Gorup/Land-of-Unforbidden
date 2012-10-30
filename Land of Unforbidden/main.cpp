@@ -19,7 +19,7 @@ int     GLOBAL_charHealth           = 100;
 int     GLOBAL_enemyHealth          = 100;
 char    GLOBAL_charTemporary       = ' ';
 int     GLOBAL_intTempAttack        = 0;
-char    GLOBAL_charDead            = 'N';
+char    GLOBAL_charContinue            = 'Y';
 
 //****Function Prototypes****
 char    returnChar(string);     //Return Yes/No/Other to single character
@@ -33,25 +33,52 @@ int     charAttack(int, int);   //Character Attack
 void    flee();                 //Fleeing health reduction
 void    firstFight(char);       //First fight
 string  randomItem();           //Random Item
-void    checkForDead();         //Checks GLOBAL_charDead for Y and kills program if so
+void    checkForDead();         //Checks GLOBAL_charContinue for N and kills program if so
+void    endOfGame();            //End of game, checks if you want to play again
 
 int main()
 {
+    do{
         GLOBAL_strCharacterType = characterSelect();
         GLOBAL_characterName = nameCharacter();
         cout << "The path of the " << GLOBAL_strCharacterType << " is a unique path.  " << GLOBAL_characterName << ", you have been selected to..." << endl;
         GLOBAL_charTemporary = beginPath();
         firstFight(GLOBAL_charTemporary);
         checkForDead();     //checks for death after fight
-    return 0;
+        
+        endOfGame();
+    }   while(GLOBAL_charContinue == 'Y');
+        return 0;
 }
 
 //**** My Functions ****
 
+// BEGIN END OF GAME
+void endOfGame(){
+    string tempContinue         = "";
+    cout << "Congratulations, you are victorious!!!  Would you like to play again? ";
+    cin >> tempContinue;
+    GLOBAL_charContinue = returnChar(tempContinue);
+    if(GLOBAL_charContinue == 'Y'){
+        GLOBAL_charHealth = 100;
+    }
+}
+// END END OF GAME
+
 // BEGIN CHECK FOR DEAD
 void checkForDead(){
-    if(GLOBAL_charDead != 'N'){
-        exit(0);
+    string isDead     = "";
+    if(GLOBAL_charContinue != 'Y'){
+        cout << "You are dead, would you like to play again? ";
+        cin >> isDead;
+        isDead = returnChar(isDead);
+        if(isDead == "N"){
+            exit(0);
+        }
+        else{
+            GLOBAL_charContinue = 'Y';
+            GLOBAL_charHealth = 100;
+        }
     }
 }
 // END CHECK FOR DEAD
@@ -77,7 +104,7 @@ string randomItem(){
             randomItemReturn = "+5 Health";
             GLOBAL_charHealth += 5;
             cout << "You have earned " << randomItemReturn << "." << endl;
-            cout << "Your health is now " << GLOBAL_charHealth;
+            cout << "Your health is now " << GLOBAL_charHealth << endl;
             break;
         case 4:
             randomItemReturn = "a Bow";
@@ -117,7 +144,7 @@ void firstFight(char attackFlee){
                 }
                 if(GLOBAL_charHealth <= 0){
                     cout << "You have Died!" << endl;
-                    GLOBAL_charDead = 'Y';
+                    GLOBAL_charContinue = 'N';
                 }
                 else{
                     cout << "You have killed the Butterfly.  ";
@@ -140,7 +167,7 @@ void firstFight(char attackFlee){
                 }
                 if(GLOBAL_charHealth <= 0){
                     cout << "You have Died!" << endl;
-                    GLOBAL_charDead = 'Y';
+                    GLOBAL_charContinue = 'N';
                 }
                 else{
                     cout << "You have killed the Wolf.  ";
@@ -163,7 +190,7 @@ void firstFight(char attackFlee){
                 }
                 if(GLOBAL_charHealth <= 0){
                     cout << "You have Died!" << endl;
-                    GLOBAL_charDead = 'Y';
+                    GLOBAL_charContinue = 'N';
                 }
                 else{
                     cout << "You have killed the Witch.  ";
@@ -186,7 +213,7 @@ void firstFight(char attackFlee){
                 }
                 if(GLOBAL_charHealth <= 0){
                     cout << "You have Died!" << endl;
-                    GLOBAL_charDead = 'Y';
+                    GLOBAL_charContinue = 'N';
                 }
                 else{
                     cout << "You have killed the Yeti.  ";

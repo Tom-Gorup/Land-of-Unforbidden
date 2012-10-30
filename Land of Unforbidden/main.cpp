@@ -1,4 +1,3 @@
-//
 //  main.cpp
 //  Land of Unforbidden
 
@@ -12,37 +11,37 @@
 using namespace std;
 
 //****Global Variables****
-string GLOBAL_strCharacterType  = "";
-char GLOBAL_charCharacterType   = ' ';
-string GLOBAL_characterName     = "";
-char GLOBAL_pathDirection       = ' ';
-int GLOBAL_charHealth           = 100;
-int GLOBAL_enemyHealth          = 100;
-char GLOBAL_temporary           = ' ';
-int GLOBAL_tempAttack           = 0;
-char GLOBAL_charDead            = 'N';
+string  GLOBAL_strCharacterType  = "";
+char    GLOBAL_charCharacterType   = ' ';
+string  GLOBAL_characterName     = "";
+char    GLOBAL_charPathDirection   = ' ';
+int     GLOBAL_charHealth           = 100;
+int     GLOBAL_enemyHealth          = 100;
+char    GLOBAL_charTemporary       = ' ';
+int     GLOBAL_intTempAttack        = 0;
+char    GLOBAL_charDead            = 'N';
 
 //****Function Prototypes****
-char returnChar(string);        //Return Yes/No/Other to single character
-string returnCharPick(int);     //Return Character type
-string returnCharInfo(int);     //Return Character Information
-string nameCharacter();         //Get characters name
-string characterSelect();       //Main Character Selection Function
-char beginPath();               //Begin the Path
-char whichDirection(char);      //Pick the direction
-int charAttack(int, int);       //Character Attack
-void flee();                    //Fleeing health reduction
-void firstFight(char);          //First fight
-string randomItem();            //Random Item
-void checkForDead();
+char    returnChar(string);     //Return Yes/No/Other to single character
+string  returnCharPick(int);    //Return Character type
+string  returnCharInfo(int);    //Return Character Information
+string  nameCharacter();        //Get characters name
+string  characterSelect();      //Main Character Selection Function
+char    beginPath();            //Begin the Path
+char    whichDirection(char);   //Pick the direction
+int     charAttack(int, int);   //Character Attack
+void    flee();                 //Fleeing health reduction
+void    firstFight(char);       //First fight
+string  randomItem();           //Random Item
+void    checkForDead();         //Checks GLOBAL_charDead for Y and kills program if so
 
 int main()
 {
         GLOBAL_strCharacterType = characterSelect();
         GLOBAL_characterName = nameCharacter();
         cout << "The path of the " << GLOBAL_strCharacterType << " is a unique path.  " << GLOBAL_characterName << ", you have been selected to..." << endl;
-        GLOBAL_temporary = beginPath();
-        firstFight(GLOBAL_temporary);
+        GLOBAL_charTemporary = beginPath();
+        firstFight(GLOBAL_charTemporary);
         checkForDead();     //checks for death after fight
     return 0;
 }
@@ -102,18 +101,18 @@ void firstFight(char attackFlee){
         flee();
     }
     else if(attackFlee == 'A'){
-        switch (GLOBAL_pathDirection) {
+        switch (GLOBAL_charPathDirection) {
             case 'N':
                 GLOBAL_enemyHealth *= .10;
                 cout << "The Butterfly has " << GLOBAL_enemyHealth << " health." << endl;
                  while ((GLOBAL_enemyHealth > 0) && (GLOBAL_charHealth > 0)) {
-                    GLOBAL_tempAttack = charAttack(1, 3);
-                    cout << "Butterfly attacks with " << GLOBAL_tempAttack << "." << endl;
-                    GLOBAL_charHealth -= GLOBAL_tempAttack;
+                    GLOBAL_intTempAttack = charAttack(1, 3);
+                    cout << "Butterfly attacks with " << GLOBAL_intTempAttack << "." << endl;
+                    GLOBAL_charHealth -= GLOBAL_intTempAttack;
                     cout << "Your health is now " << GLOBAL_charHealth << "." << endl;
-                    GLOBAL_tempAttack = charAttack(1, 10);
-                    cout << "You attack with " << GLOBAL_tempAttack << "." << endl;
-                    GLOBAL_enemyHealth -= GLOBAL_tempAttack;
+                    GLOBAL_intTempAttack = charAttack(1, 10);
+                    cout << "You attack with " << GLOBAL_intTempAttack << "." << endl;
+                    GLOBAL_enemyHealth -= GLOBAL_intTempAttack;
                     cout << "The Butterfly has " << GLOBAL_enemyHealth << " health." << endl;
                 }
                 if(GLOBAL_charHealth <= 0){
@@ -130,13 +129,13 @@ void firstFight(char attackFlee){
                 GLOBAL_enemyHealth *= .35;
                 cout << "The Wolf has " << GLOBAL_enemyHealth << " health." << endl;
                 while ((GLOBAL_enemyHealth > 0) && (GLOBAL_charHealth > 0)) {
-                    GLOBAL_tempAttack = charAttack(1, 4);
-                    cout << "Wolf attacks with " << GLOBAL_tempAttack << "." << endl;
-                    GLOBAL_charHealth -= GLOBAL_tempAttack;
+                    GLOBAL_intTempAttack = charAttack(1, 4);
+                    cout << "Wolf attacks with " << GLOBAL_intTempAttack << "." << endl;
+                    GLOBAL_charHealth -= GLOBAL_intTempAttack;
                     cout << "Your health is now " << GLOBAL_charHealth << "." << endl;
-                    GLOBAL_tempAttack = charAttack(1, 10);
-                    cout << "You attack with " << GLOBAL_tempAttack << "." << endl;
-                    GLOBAL_enemyHealth -= GLOBAL_tempAttack;
+                    GLOBAL_intTempAttack = charAttack(1, 10);
+                    cout << "You attack with " << GLOBAL_intTempAttack << "." << endl;
+                    GLOBAL_enemyHealth -= GLOBAL_intTempAttack;
                     cout << "The Wolf has " << GLOBAL_enemyHealth << " health." << endl;
                 }
                 if(GLOBAL_charHealth <= 0){
@@ -153,13 +152,13 @@ void firstFight(char attackFlee){
                 GLOBAL_enemyHealth *= .60;
                 cout << "The Witch has " << GLOBAL_enemyHealth << " health." << endl;
                 while ((GLOBAL_enemyHealth > 0) && (GLOBAL_charHealth > 0)) {
-                    GLOBAL_tempAttack = charAttack(1, 5);
-                    cout << "Witch attacks with " << GLOBAL_tempAttack << "." << endl;
-                    GLOBAL_charHealth -= GLOBAL_tempAttack;
+                    GLOBAL_intTempAttack = charAttack(1, 5);
+                    cout << "Witch attacks with " << GLOBAL_intTempAttack << "." << endl;
+                    GLOBAL_charHealth -= GLOBAL_intTempAttack;
                     cout << "Your health is now " << GLOBAL_charHealth << "." << endl;
-                    GLOBAL_tempAttack = charAttack(1, 10);
-                    cout << "You attack with " << GLOBAL_tempAttack << "." << endl;
-                    GLOBAL_enemyHealth -= GLOBAL_tempAttack;
+                    GLOBAL_intTempAttack = charAttack(1, 10);
+                    cout << "You attack with " << GLOBAL_intTempAttack << "." << endl;
+                    GLOBAL_enemyHealth -= GLOBAL_intTempAttack;
                     cout << "The Witch has " << GLOBAL_enemyHealth << " health." << endl;
                 }
                 if(GLOBAL_charHealth <= 0){
@@ -176,13 +175,13 @@ void firstFight(char attackFlee){
                 GLOBAL_enemyHealth *= .80;
                 cout << "The Yeti has " << GLOBAL_enemyHealth << " health." << endl;
                 while ((GLOBAL_enemyHealth > 0) && (GLOBAL_charHealth > 0)) {
-                    GLOBAL_tempAttack = charAttack(1, 8);
-                    cout << "Yeti attacks with " << GLOBAL_tempAttack << "." << endl;
-                    GLOBAL_charHealth -= GLOBAL_tempAttack;
+                    GLOBAL_intTempAttack = charAttack(1, 8);
+                    cout << "Yeti attacks with " << GLOBAL_intTempAttack << "." << endl;
+                    GLOBAL_charHealth -= GLOBAL_intTempAttack;
                     cout << "Your health is now " << GLOBAL_charHealth << "." << endl;
-                    GLOBAL_tempAttack = charAttack(1, 10);
-                    cout << "You attack with " << GLOBAL_tempAttack << "." << endl;
-                    GLOBAL_enemyHealth -= GLOBAL_tempAttack;
+                    GLOBAL_intTempAttack = charAttack(1, 10);
+                    cout << "You attack with " << GLOBAL_intTempAttack << "." << endl;
+                    GLOBAL_enemyHealth -= GLOBAL_intTempAttack;
                     cout << "The Yeti has " << GLOBAL_enemyHealth << " health." << endl;
                 }
                 if(GLOBAL_charHealth <= 0){
@@ -234,8 +233,8 @@ char beginPath(){
         cin >> direction;
         charDirection = returnChar(direction);
         charDirection = whichDirection(charDirection);
-        GLOBAL_pathDirection = charDirection;
-        }   while((GLOBAL_pathDirection != 'N') && (GLOBAL_pathDirection != 'S') && (GLOBAL_pathDirection != 'W') && (GLOBAL_pathDirection != 'E'));
+        GLOBAL_charPathDirection = charDirection;
+        }   while((GLOBAL_charPathDirection != 'N') && (GLOBAL_charPathDirection != 'S') && (GLOBAL_charPathDirection != 'W') && (GLOBAL_charPathDirection != 'E'));
             
     cout << "Attack or Flee? ";
     cin >> attackFlee;

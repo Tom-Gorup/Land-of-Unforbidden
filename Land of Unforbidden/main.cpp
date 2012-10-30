@@ -12,8 +12,6 @@
 #include <string>
 #include <ctype.h>
 
-int main(int argc, const char * argv[])
-{
 using namespace std;
 
 //****Global Variables****
@@ -22,8 +20,6 @@ string GLOBAL_characterName     = "";
 string GLOBAL_direction         = "";
 int GLOBAL_charHealth           = 100;
 
-    // insert code here...
-    std::cout << "Hello, World!\n";
 //****Function Prototypes****
 char returnChar(string);        //Return Yes/No/Other to single character
 string returnCharPick(int);     //Return Character type

@@ -28,6 +28,7 @@
 		B7D0EE4F163F6C100052CFD8 /* Land of Unforbidden */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Land of Unforbidden"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7D0EE53163F6C100052CFD8 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		B7D0EE55163F6C100052CFD8 /* Land_of_Unforbidden.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Land_of_Unforbidden.1; sourceTree = "<group>"; };
+		B7D0EE6416418F6C0052CFD8 /* functions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = functions.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +63,7 @@
 			children = (
 				B7D0EE53163F6C100052CFD8 /* main.cpp */,
 				B7D0EE55163F6C100052CFD8 /* Land_of_Unforbidden.1 */,
+				B7D0EE6416418F6C0052CFD8 /* functions.h */,
 			);
 			path = "Land of Unforbidden";
 			sourceTree = "<group>";
@@ -210,6 +212,7 @@
 				B7D0EE5B163F6C100052CFD8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

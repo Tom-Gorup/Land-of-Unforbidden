@@ -183,7 +183,7 @@ void firstFight(char attackFlee){
                     cout << "You attack with " << GLOBAL_intTempAttack << "." << endl;
                     GLOBAL_enemyHealth -= GLOBAL_intTempAttack;
                     cout << "The Butterfly has " << GLOBAL_enemyHealth << " health." << endl;
-                    pause(2);
+                    pause(1);
                 }
                 if(GLOBAL_charHealth <= 0){
                     GLOBAL_charContinue = 'N';
@@ -206,7 +206,7 @@ void firstFight(char attackFlee){
                     cout << "You attack with " << GLOBAL_intTempAttack << "." << endl;
                     GLOBAL_enemyHealth -= GLOBAL_intTempAttack;
                     cout << "The Wolf has " << GLOBAL_enemyHealth << " health." << endl;
-                    pause(2);
+                    pause(1);
                 }
                 if(GLOBAL_charHealth <= 0){
                     GLOBAL_charContinue = 'N';
@@ -229,7 +229,7 @@ void firstFight(char attackFlee){
                     cout << "You attack with " << GLOBAL_intTempAttack << "." << endl;
                     GLOBAL_enemyHealth -= GLOBAL_intTempAttack;
                     cout << "The Witch has " << GLOBAL_enemyHealth << " health." << endl;
-                    pause(2);
+                    pause(1);
                 }
                 if(GLOBAL_charHealth <= 0){
                     GLOBAL_charContinue = 'N';
@@ -252,7 +252,7 @@ void firstFight(char attackFlee){
                     cout << "You attack with " << GLOBAL_intTempAttack << "." << endl;
                     GLOBAL_enemyHealth -= GLOBAL_intTempAttack;
                     cout << "The Yeti has " << GLOBAL_enemyHealth << " health." << endl;
-                    pause(2);
+                    pause(1);
                 }
                 if(GLOBAL_charHealth <= 0){
                     GLOBAL_charContinue = 'N';

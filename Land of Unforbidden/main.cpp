@@ -12,7 +12,7 @@ using namespace std;
 
 //****Global Variables****
 string  GLOBAL_strCharacterType         = "";
-char    GLOBAL_charCharacterType        = ' ';
+int     GLOBAL_intCharacterType         = 0;
 string  GLOBAL_characterName            = "";
 char    GLOBAL_charPathDirection        = ' ';
 int     GLOBAL_charHealth               = 100;
@@ -20,6 +20,7 @@ int     GLOBAL_enemyHealth              = 100;
 char    GLOBAL_charTemporary            = ' ';
 int     GLOBAL_intTempAttack            = 0;
 char    GLOBAL_charContinue             = 'Y';
+string  GLOBAL_arrayInventory[0];
 string  GLOBAL_arrayItems[0];
 int     GLOBAL_intItemNumber            = 0;
 string  GLOBAL_tempNewItem              = "";
@@ -27,9 +28,9 @@ string  GLOBAL_tempNewItem              = "";
 //****Function Prototypes****
 char    returnChar(string);     //Return Yes/No/Other to single character
 string  returnCharPick(int);    //Return Character type
-string  returnCharInfo(int);    //Return Character Information
+void    returnCharInfo();       //Return Character Information
 string  nameCharacter();        //Get characters name
-string  characterSelect();      //Main Character Selection Function
+void    characterSelect();      //Main Character Selection Function
 char    beginPath();            //Begin the Path
 char    whichDirection(char);   //Pick the direction
 int     charAttack(int, int);   //Character Attack
@@ -41,18 +42,20 @@ void    endOfGame();            //End of game, checks if you want to play again
 void    addItem();              //Add item to array
 void    checkInventory();       //Display Inventory
 void    pause(int);             //Pause Function
+string  randomItemCreator();    //Creates the random item
 
 int main()
 {
     do{
         system("clear");
-        GLOBAL_strCharacterType = characterSelect();
+        characterSelect();
         GLOBAL_characterName = nameCharacter();
         cout << "The path of the " << GLOBAL_strCharacterType << " is a unique path.  " << GLOBAL_characterName << ", you have been selected to..." << endl;
         GLOBAL_charTemporary = beginPath();
         firstFight(GLOBAL_charTemporary);
         checkForDead();     //checks for death after fight
 
+        
         checkInventory();
         endOfGame();
     }   while(GLOBAL_charContinue == 'Y');
@@ -60,6 +63,27 @@ int main()
 }
 
 //**** My Functions ****
+
+// BEGIN RANDOM ITEM CREATOR
+string randomItemCreator(){
+    int randomItemSelector  = 0;
+    string randomItemReturn = "";
+    
+    GLOBAL_arrayItems[1] = "Hammer";
+    GLOBAL_arrayItems[2] = "Sword";
+    GLOBAL_arrayItems[3] = "Vasoline";
+    GLOBAL_arrayItems[4] = "Bow";
+    GLOBAL_arrayItems[5] = "+5 Health";
+    GLOBAL_arrayItems[6] = "+10 Health";
+    GLOBAL_arrayItems[7] = "Axe";
+    
+    srand(static_cast<int>(time(0)));
+    randomItemSelector = 1 + rand() % (7 - 1 + 1);
+    randomItemReturn = GLOBAL_arrayItems[randomItemSelector];
+    
+    return randomItemReturn;
+}
+// END RANDOM ITEM CREATOR
 
 // BEGIN PAUSE FUNCTION
 void pause(int dur){
@@ -74,7 +98,7 @@ void checkInventory(){
     tempItemNumber = GLOBAL_intItemNumber;
     cout << "Inventory:" << endl;
     while(tempItemNumber > 0){
-        cout << GLOBAL_arrayItems[tempItemNumber] << endl;
+        cout << GLOBAL_arrayInventory[tempItemNumber] << endl;
         tempItemNumber -= 1;
     }
 }
@@ -83,7 +107,7 @@ void checkInventory(){
 // BEGIN ADD ITEM
 void addItem(){
     GLOBAL_intItemNumber += 1;
-    GLOBAL_arrayItems[GLOBAL_intItemNumber] = GLOBAL_tempNewItem;
+    GLOBAL_arrayInventory[GLOBAL_intItemNumber] = GLOBAL_tempNewItem;
 }
 // END ADD ITEM
 
@@ -119,48 +143,11 @@ void checkForDead(){
 
 // BEGIN RANDOM ITEM
 string randomItem(){
-    int randItemNumber          = 0.0;
-    string randomItemReturn     = "";
+    GLOBAL_tempNewItem = randomItemCreator();
+    cout << "You have earned " << GLOBAL_tempNewItem << endl;
+    addItem();
     
-    srand(static_cast<int>(time(0)));
-    randItemNumber = 1 + rand() % (5 - 1 + 1);
-    
-    switch (randItemNumber) {
-        case 1:
-            randomItemReturn = "a Hammer";
-            cout << "You have earned " << randomItemReturn << endl;
-            GLOBAL_tempNewItem = "Hammer";
-            addItem();
-            break;
-        case 2:
-            randomItemReturn = "a Sword";
-            cout << "You have earned " << randomItemReturn << endl;
-            GLOBAL_tempNewItem = "Sword";
-            addItem();
-            break;
-        case 3:
-            randomItemReturn = "+5 Health";
-            GLOBAL_charHealth += 5;
-            cout << "You have earned " << randomItemReturn << "." << endl;
-            cout << "Your health is now " << GLOBAL_charHealth << endl;
-            break;
-        case 4:
-            randomItemReturn = "a Bow";
-            cout << "You have earned " << randomItemReturn << endl;
-            GLOBAL_tempNewItem = "Bow";
-            addItem();
-            break;
-        case 5:
-            randomItemReturn = "some Vasoline";
-            cout << "You have earned " << randomItemReturn << endl;
-            GLOBAL_tempNewItem = "Vasoline";
-            addItem();
-            break;
-        default:
-            break;
-    }
-    
-    return randomItemReturn;
+    return GLOBAL_tempNewItem;
 }
 // END RANDOM ITEM
 
@@ -348,42 +335,38 @@ string nameCharacter(){
 // END NAME CHARACTER FUNCTION
 
 // BEGIN MAIN CHARACTER SELECT FUNCTION
-string characterSelect(){
+void characterSelect(){
     
-    int characterNumber     = ' ';
     string characterType    = "";
     char cAnswer            = 'N';
     string tempAnswer       = "";
     string infoReturn       = "";
-    
-    //Character Select
-    while(cAnswer != 'Y'){
+
+    do{
         
         cout << "Welcome to the Land of the Unforbidden.  Please select your character. (1) Rogue, (2) Warrior, (3) Paladin, or (4) Archer: ";
-        cin >> characterNumber;
-        characterType = returnCharPick(characterNumber);
+        cin >> GLOBAL_intCharacterType;
         
-        if ((characterType == "N") || (characterNumber > 9)){
+        characterType = returnCharPick(GLOBAL_intCharacterType);
+        
+        if (characterType == "N"){
             cout << "Looks like you haven't picked a valid character." << endl;
         }
         else{
             cout << "Are you sure you would like to be a(n) " << characterType << "?  Type 'info', for more information about your character, otherwise yes to continue: ";
             cin >> tempAnswer;
+            characterType = GLOBAL_strCharacterType;
             // Testing Function
             cAnswer = returnChar(tempAnswer);
-            
+    
             if(cAnswer == 'I'){
-                infoReturn = returnCharInfo(characterNumber);
-                cout << infoReturn << endl;
+                returnCharInfo();
                 cout << "Would you still like this character? ";
                 cin >> tempAnswer;
                 cAnswer = returnChar(tempAnswer);
             }
         }
-        
-    }
-    characterNumber = GLOBAL_charCharacterType;
-    return characterType;
+    }   while(cAnswer != 'Y');
 }
 // END MAIN CHARACTER SELECT FUNCTION
 
@@ -403,57 +386,52 @@ char returnChar(string temporaryString)
 // BEGIN RETURN CHARACTER PICK
 string returnCharPick(int tempCharPick)
 {
-    string characterName;
+    string characterName    = "";
+    string characterSelect[9];
     
-    switch (tempCharPick) {
-        case 1:
-            characterName = "Rogue";
-            break;
-        case 2:
-            characterName = "Warrior";
-            break;
-        case 3:
-            characterName  = "Paladin";
-            break;
-        case 4:
-            characterName = "Archer";
-            break;
-        case 9:
-            characterName = "Cerberus";
-            break;
-        default:
-            characterName = "N";
-            break;
+    if(((tempCharPick >= 1) && (tempCharPick <= 4)) || (tempCharPick == 9)){
+        characterSelect[1] = "Rogue";
+        characterSelect[2] = "Warrior";
+        characterSelect[3] = "Paladin";
+        characterSelect[4] = "Archer";
+        characterSelect[5] = "Not a Character";
+        characterSelect[6] = "Not a Character";
+        characterSelect[7] = "Not a Character";
+        characterSelect[8] = "Not a Character";
+        characterSelect[9] = "Cerberus";
+        characterName = characterSelect[tempCharPick];
     }
+    else{
+        characterName = "N";
+    }
+
     return characterName;
 }
 // END RETURN CHARACTER PICK
 
 // BEGIN RETURN CHARACTER INFORMATION
-string returnCharInfo(int tempInfoChar)
+void returnCharInfo()
 {
-    string charInfo         = "";
+    string arrayCharInfo[9];
+    string giveInfo = "";
     
-    switch (tempInfoChar) {
-        case 1:
-            charInfo = "Information about the Rogue.";
-            break;
-        case 2:
-            charInfo = "Information about the Warrior.";
-            break;
-        case 3:
-            charInfo = "Information about the Paladin.";
-            break;
-        case 4:
-            charInfo = "Information about the Archer.";
-            break;
-        case 9:
-            charInfo = "Information about the Secret characater, Cerberus.";
-            break;
-        default:
-            charInfo = "Looks like you haven't picked a valid character.";
-            break;
+    arrayCharInfo[1] = "Information about the Rogue.";
+    arrayCharInfo[2] = "Information about the Warrior.";
+    arrayCharInfo[3] = "Information about the Paladin.";
+    arrayCharInfo[4] = "Information about the Archer.";
+    arrayCharInfo[5] = "Sorry, Not a valid character.";
+    arrayCharInfo[6] = "Sorry, Not a valid character.";
+    arrayCharInfo[7] = "Sorry, Not a valid character.";
+    arrayCharInfo[8] = "Sorry, Not a valid character.";
+    arrayCharInfo[9] = "Information about the Secret characater, Cerberus.";
+    
+    if((GLOBAL_intCharacterType >= 1) && (GLOBAL_intCharacterType <= 9)){
+        giveInfo = arrayCharInfo[GLOBAL_intCharacterType];
     }
-    return charInfo;
+    else{
+        giveInfo = "Looks like you haven't picked a valid character.2 ";
+    }
+    cout << giveInfo << endl;
+    //return giveInfo;
 }
 // END RETURN CHARACTER INFORMATION

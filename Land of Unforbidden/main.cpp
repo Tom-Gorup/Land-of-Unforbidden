@@ -54,7 +54,6 @@ int main()
         GLOBAL_charTemporary = beginPath();
         firstFight(GLOBAL_charTemporary);
         checkForDead();     //checks for death after fight
-
         
         checkInventory();
         endOfGame();

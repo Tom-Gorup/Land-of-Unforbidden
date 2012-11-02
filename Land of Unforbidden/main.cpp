@@ -43,11 +43,12 @@ void    addItem();              //Add item to array
 void    checkInventory();       //Display Inventory
 void    pause(int);             //Pause Function
 string  randomItemCreator();    //Creates the random item
+void    clearScreen();          //Clears screen
 
 int main()
 {
     do{
-        system("clear");
+        clearScreen();
         characterSelect();
         GLOBAL_characterName = nameCharacter();
         cout << "The path of the " << GLOBAL_strCharacterType << " is a unique path.  " << GLOBAL_characterName << ", you have been selected to..." << endl;
@@ -62,6 +63,15 @@ int main()
 }
 
 //**** My Functions ****
+
+// CLEAR SCREEN
+void clearScreen(){
+    for(int i = 0; i < 25; i++) //this will output 25 newline characters
+    {
+        cout << "\n";
+    }
+}
+// END CLEAR SCREEN
 
 // BEGIN RANDOM ITEM CREATOR
 string randomItemCreator(){

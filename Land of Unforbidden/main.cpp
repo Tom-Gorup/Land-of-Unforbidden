@@ -20,8 +20,8 @@ int     GLOBAL_enemyHealth              = 100;
 char    GLOBAL_charTemporary            = ' ';
 int     GLOBAL_intTempAttack            = 0;
 char    GLOBAL_charContinue             = 'Y';
-string  GLOBAL_arrayInventory[0];
-string  GLOBAL_arrayItems[0];
+string  GLOBAL_arrayInventory[10];
+string  GLOBAL_arrayItems[10];
 int     GLOBAL_intItemNumber            = 0;
 string  GLOBAL_tempNewItem              = "";
 
@@ -47,6 +47,8 @@ void    clearScreen();          //Clears screen
 
 int main()
 {
+    //srand(static_cast<int>(time(0)));
+    srand((unsigned)time(0));
     do{
         clearScreen();
         characterSelect();
@@ -86,7 +88,6 @@ string randomItemCreator(){
     GLOBAL_arrayItems[6] = "+10 Health";
     GLOBAL_arrayItems[7] = "Axe";
     
-    srand(static_cast<int>(time(0)));
     randomItemSelector = 1 + rand() % (7 - 1 + 1);
     randomItemReturn = GLOBAL_arrayItems[randomItemSelector];
     
@@ -278,8 +279,7 @@ void flee(){
 
 // BEGIN CHARACTER ATTACK
 int charAttack(int lowerStrength, int upperStrength){
-    int attackPower         = 0.0;
-    srand(static_cast<int>(time(0)));
+    int attackPower         = 0;
     attackPower = lowerStrength + rand() % (upperStrength - lowerStrength + 1);
     return attackPower;
 }

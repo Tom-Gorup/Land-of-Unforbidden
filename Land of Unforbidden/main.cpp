@@ -18,32 +18,32 @@ using namespace std;
 //int     GLOBAL_charHealth               = 100;
 //int     GLOBAL_enemyHealth              = 100;
 //char    GLOBAL_charTemporary            = ' ';
-int     GLOBAL_intTempAttack            = 0;
+//int     GLOBAL_intTempAttack            = 0;
+//string  GLOBAL_arrayItems[10];
+//int     GLOBAL_intItemNumber            = 0;
+//string  GLOBAL_tempNewItem              = "";
 char    GLOBAL_charContinue             = 'Y';
 string  GLOBAL_arrayInventory[10];
-string  GLOBAL_arrayItems[10];
-int     GLOBAL_intItemNumber            = 0;
-string  GLOBAL_tempNewItem              = "";
 
 //****Function Prototypes****
-char    returnChar(string);                     //Return Yes/No/Other to single character
-string  returnCharPick(int);                    //Return Character type
-void    returnCharInfo(int);                    //Return Character Information
-string  nameCharacter();                        //Get characters name
-void    characterSelect(int &, string &);       //Main Character Selection Function
-char    beginPath(char &);                            //Begin the Path
-char    whichDirection(char);                   //Pick the direction
-int     charAttack(int, int);                   //Character Attack
-void    flee(int &);                                 //Fleeing health reduction
-void    firstFight(char, int &, int &, char);                       //First fight
-string  randomItem();                           //Random Item
-void    checkForDead(int &);                         //Checks GLOBAL_charContinue for N and kills program if so
-void    endOfGame(int &);                            //End of game, checks if you want to play again
-void    addItem();                              //Add item to array
-void    checkInventory();                       //Display Inventory
-void    pause(int);                             //Pause Function
-string  randomItemCreator();                    //Creates the random item
-void    clearScreen();                          //Clears the screen
+char    returnChar(string);                             //Return Yes/No/Other to single character
+string  returnCharPick(int);                            //Return Character type
+void    returnCharInfo(int);                            //Return Character Information
+string  nameCharacter();                                //Get characters name
+void    characterSelect(int &, string &);               //Main Character Selection Function
+char    beginPath(char &);                              //Begin the Path
+char    whichDirection(char);                           //Pick the direction
+int     charAttack(int, int);                           //Character Attack
+void    flee(int &);                                    //Fleeing health reduction
+void    firstFight(char, int &, int &, char, int &);    //First fight
+void    randomItem(int &);                              //Random Item
+void    checkForDead(int &);                            //Checks GLOBAL_charContinue for N and kills program if so
+void    endOfGame(int &);                               //End of game, checks if you want to play again
+void    addItem(string, int &);                         //Add item to array
+void    checkInventory(int);                            //Display Inventory
+void    pause(int);                                     //Pause Function
+string  randomItemCreator();                            //Creates the random item
+void    clearScreen();                                  //Clears the screen
 
 int main()
 {
@@ -54,6 +54,7 @@ int main()
     int     charHealth                  = 100;
     int     enemyHealth                 = 100;
     char    charPathDirection           = ' ';
+    int     intItemNumber               = 0;
     
     srand((unsigned)time(0));                   //initiate random number
     do{
@@ -63,10 +64,10 @@ int main()
         cout << "The path of the " << strCharacterType << " is a unique path.  " << characterName << ", you have been selected to..." << endl;
         
         charTemporary = beginPath(charPathDirection);
-        firstFight(charTemporary, charHealth, enemyHealth, charPathDirection);
+        firstFight(charTemporary, charHealth, enemyHealth, charPathDirection, intItemNumber);
         checkForDead(charHealth);                         //checks for death after fight
         
-        checkInventory();
+        checkInventory(intItemNumber);
         endOfGame(charHealth);
     }   while(GLOBAL_charContinue == 'Y');
     return 0;
@@ -87,6 +88,7 @@ void clearScreen(){
 string randomItemCreator(){
     int randomItemSelector  = 0;
     string randomItemReturn = "";
+    string  GLOBAL_arrayItems[10];
     
     GLOBAL_arrayItems[1] = "Hammer";
     GLOBAL_arrayItems[2] = "Sword";
@@ -111,21 +113,21 @@ void pause(int dur){
 // END PAUSE FUNCTION
 
 // BEGIN CHECK INVENTORY
-void checkInventory(){
-    int tempItemNumber  = 0;
-    tempItemNumber = GLOBAL_intItemNumber;
+void checkInventory(int intInventoryNum){
+    //int tempItemNumber  = 0;
+    //tempItemNumber = GLOBAL_intItemNumber;
     cout << "Inventory:" << endl;
-    while(tempItemNumber > 0){
-        cout << GLOBAL_arrayInventory[tempItemNumber] << endl;
-        tempItemNumber -= 1;
+    while(intInventoryNum > 0){
+        cout << GLOBAL_arrayInventory[intInventoryNum] << endl;
+        intInventoryNum -= 1;
     }
 }
 // END CHECK INVENTORY
 
 // BEGIN ADD ITEM
-void addItem(){
-    GLOBAL_intItemNumber += 1;
-    GLOBAL_arrayInventory[GLOBAL_intItemNumber] = GLOBAL_tempNewItem;
+void addItem(string addedItem, int &addItemNumber){
+    addItemNumber             += 1;
+    GLOBAL_arrayInventory[addItemNumber] = addedItem;
 }
 // END ADD ITEM
 
@@ -137,7 +139,7 @@ void endOfGame(int &tempEndOfHealth){
     GLOBAL_charContinue = returnChar(tempContinue);
     
     if(GLOBAL_charContinue == 'Y'){
-        tempEndOfHealth = 100;
+        //tempEndOfHealth = 100;
     }
 }
 // END END OF GAME
@@ -161,17 +163,19 @@ void checkForDead(int &tempCheckHealth){
 // END CHECK FOR DEAD
 
 // BEGIN RANDOM ITEM
-string randomItem(){
-    GLOBAL_tempNewItem = randomItemCreator();
-    cout << "You have earned " << GLOBAL_tempNewItem << endl;
-    addItem();
+void randomItem(int &intItemNumber){
+    string tempRandNewItem  = "";
+    tempRandNewItem = randomItemCreator();
+    cout << "You have earned a(n) " << tempRandNewItem << endl;
+    addItem(tempRandNewItem, intItemNumber);
     
-    return GLOBAL_tempNewItem;
+    //return GLOBAL_tempNewItem;
 }
 // END RANDOM ITEM
 
 // BEGIN FIRST ATTACK
-void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, char firstDirection){
+void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, char firstDirection, int &itemNumber){
+    int intTempAttack           = 0;
     if(attackFlee == 'F'){
         flee(firstCharHealth);
     }
@@ -181,13 +185,13 @@ void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, ch
                 firstEnemyHealth *= .10;
                 cout << "The Butterfly has " << firstEnemyHealth << " health." << endl;
                 while ((firstEnemyHealth > 0) && (firstCharHealth > 0)) {
-                    GLOBAL_intTempAttack = charAttack(1, 3);
-                    cout << "Butterfly attacks with " << GLOBAL_intTempAttack << "." << endl;
-                    firstCharHealth -= GLOBAL_intTempAttack;
+                    intTempAttack = charAttack(1, 3);
+                    cout << "Butterfly attacks with " << intTempAttack << "." << endl;
+                    firstCharHealth -= intTempAttack;
                     cout << "Your health is now " << firstCharHealth << "." << endl;
-                    GLOBAL_intTempAttack = charAttack(1, 10);
-                    cout << "You attack with " << GLOBAL_intTempAttack << "." << endl;
-                    firstEnemyHealth -= GLOBAL_intTempAttack;
+                    intTempAttack = charAttack(1, 10);
+                    cout << "You attack with " << intTempAttack << "." << endl;
+                    firstEnemyHealth -= intTempAttack;
                     cout << "The Butterfly has " << firstEnemyHealth << " health." << endl;
                     pause(1);
                 }
@@ -196,7 +200,7 @@ void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, ch
                 }
                 else{
                     cout << "You have killed the Butterfly.  ";
-                    randomItem();
+                    randomItem(itemNumber);
                     firstEnemyHealth = 100;
                 }
                 break;
@@ -204,13 +208,13 @@ void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, ch
                 firstEnemyHealth *= .35;
                 cout << "The Wolf has " << firstEnemyHealth << " health." << endl;
                 while ((firstEnemyHealth > 0) && (firstCharHealth > 0)) {
-                    GLOBAL_intTempAttack = charAttack(1, 4);
-                    cout << "Wolf attacks with " << GLOBAL_intTempAttack << "." << endl;
-                    firstCharHealth -= GLOBAL_intTempAttack;
+                    intTempAttack = charAttack(1, 4);
+                    cout << "Wolf attacks with " << intTempAttack << "." << endl;
+                    firstCharHealth -= intTempAttack;
                     cout << "Your health is now " << firstCharHealth << "." << endl;
-                    GLOBAL_intTempAttack = charAttack(1, 10);
-                    cout << "You attack with " << GLOBAL_intTempAttack << "." << endl;
-                    firstEnemyHealth -= GLOBAL_intTempAttack;
+                    intTempAttack = charAttack(1, 10);
+                    cout << "You attack with " << intTempAttack << "." << endl;
+                    firstEnemyHealth -= intTempAttack;
                     cout << "The Wolf has " << firstEnemyHealth << " health." << endl;
                     pause(1);
                 }
@@ -219,7 +223,7 @@ void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, ch
                 }
                 else{
                     cout << "You have killed the Wolf.  ";
-                    randomItem();
+                    randomItem(itemNumber);
                     firstEnemyHealth = 100;
                 }
                 break;
@@ -227,13 +231,13 @@ void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, ch
                 firstEnemyHealth *= .60;
                 cout << "The Witch has " << firstEnemyHealth << " health." << endl;
                 while ((firstEnemyHealth > 0) && (firstCharHealth > 0)) {
-                    GLOBAL_intTempAttack = charAttack(1, 5);
-                    cout << "Witch attacks with " << GLOBAL_intTempAttack << "." << endl;
-                    firstCharHealth -= GLOBAL_intTempAttack;
+                    intTempAttack = charAttack(1, 5);
+                    cout << "Witch attacks with " << intTempAttack << "." << endl;
+                    firstCharHealth -= intTempAttack;
                     cout << "Your health is now " << firstCharHealth << "." << endl;
-                    GLOBAL_intTempAttack = charAttack(1, 10);
-                    cout << "You attack with " << GLOBAL_intTempAttack << "." << endl;
-                    firstEnemyHealth -= GLOBAL_intTempAttack;
+                    intTempAttack = charAttack(1, 10);
+                    cout << "You attack with " << intTempAttack << "." << endl;
+                    firstEnemyHealth -= intTempAttack;
                     cout << "The Witch has " << firstEnemyHealth << " health." << endl;
                     pause(1);
                 }
@@ -242,7 +246,7 @@ void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, ch
                 }
                 else{
                     cout << "You have killed the Witch.  ";
-                    randomItem();
+                    randomItem(itemNumber);
                     firstEnemyHealth = 100;
                 }
                 break;
@@ -250,13 +254,13 @@ void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, ch
                 firstEnemyHealth *= .80;
                 cout << "The Yeti has " << firstEnemyHealth << " health." << endl;
                 while ((firstEnemyHealth > 0) && (firstCharHealth > 0)) {
-                    GLOBAL_intTempAttack = charAttack(1, 8);
-                    cout << "Yeti attacks with " << GLOBAL_intTempAttack << "." << endl;
-                    firstCharHealth -= GLOBAL_intTempAttack;
+                    intTempAttack = charAttack(1, 8);
+                    cout << "Yeti attacks with " << intTempAttack << "." << endl;
+                    firstCharHealth -= intTempAttack;
                     cout << "Your health is now " << firstCharHealth << "." << endl;
-                    GLOBAL_intTempAttack = charAttack(1, 10);
-                    cout << "You attack with " << GLOBAL_intTempAttack << "." << endl;
-                    firstEnemyHealth -= GLOBAL_intTempAttack;
+                    intTempAttack = charAttack(1, 10);
+                    cout << "You attack with " << intTempAttack << "." << endl;
+                    firstEnemyHealth -= intTempAttack;
                     cout << "The Yeti has " << firstEnemyHealth << " health." << endl;
                     pause(1);
                 }
@@ -265,7 +269,7 @@ void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, ch
                 }
                 else{
                     cout << "You have killed the Yeti.  ";
-                    randomItem();
+                    randomItem(itemNumber);
                     firstEnemyHealth = 100;
                 }
                 break;

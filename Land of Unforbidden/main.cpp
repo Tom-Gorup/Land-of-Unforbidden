@@ -22,7 +22,7 @@ using namespace std;
 //string  GLOBAL_arrayItems[10];
 //int     GLOBAL_intItemNumber            = 0;
 //string  GLOBAL_tempNewItem              = "";
-char    GLOBAL_charContinue             = 'Y';
+//char    GLOBAL_charContinue             = 'Y';
 string  GLOBAL_arrayInventory[10];
 
 //****Function Prototypes****
@@ -35,10 +35,10 @@ char    beginPath(char &);                              //Begin the Path
 char    whichDirection(char);                           //Pick the direction
 int     charAttack(int, int);                           //Character Attack
 void    flee(int &);                                    //Fleeing health reduction
-void    firstFight(char, int &, int &, char, int &);    //First fight
+void    firstFight(char, int &, int &, char, int &, char &);    //First fight
 void    randomItem(int &);                              //Random Item
-void    checkForDead(int &);                            //Checks GLOBAL_charContinue for N and kills program if so
-void    endOfGame(int &);                               //End of game, checks if you want to play again
+void    checkForDead(int &, char &);                            //Checks GLOBAL_charContinue for N and kills program if so
+void    endOfGame(int &, char &);                               //End of game, checks if you want to play again
 void    addItem(string, int &);                         //Add item to array
 void    checkInventory(int);                            //Display Inventory
 void    pause(int);                                     //Pause Function
@@ -55,8 +55,9 @@ int main()
     int     enemyHealth                 = 100;
     char    charPathDirection           = ' ';
     int     intItemNumber               = 0;
+    char    charContinue                = 'Y';
     
-    srand((unsigned)time(0));                   //initiate random number
+    srand((unsigned)time(0));                           //initiate random number
     do{
         clearScreen();
         characterSelect(intCharacterType, strCharacterType);
@@ -64,12 +65,12 @@ int main()
         cout << "The path of the " << strCharacterType << " is a unique path.  " << characterName << ", you have been selected to..." << endl;
         
         charTemporary = beginPath(charPathDirection);
-        firstFight(charTemporary, charHealth, enemyHealth, charPathDirection, intItemNumber);
-        checkForDead(charHealth);                         //checks for death after fight
+        firstFight(charTemporary, charHealth, enemyHealth, charPathDirection, intItemNumber, charContinue);
+        checkForDead(charHealth, charContinue);                       //checks for death after fight
         
         checkInventory(intItemNumber);
-        endOfGame(charHealth);
-    }   while(GLOBAL_charContinue == 'Y');
+        endOfGame(charHealth, charContinue);
+    }   while(charContinue == 'Y');
     return 0;
 }
 
@@ -77,7 +78,7 @@ int main()
 
 // CLEAR SCREEN
 void clearScreen(){
-    for(int i = 0; i < 25; i++) //this will output 25 newline characters
+    for(int i = 0; i < 25; i++)                         //this will output 25 newline characters
     {
         cout << "\n";
     }
@@ -132,22 +133,22 @@ void addItem(string addedItem, int &addItemNumber){
 // END ADD ITEM
 
 // BEGIN END OF GAME
-void endOfGame(int &tempEndOfHealth){
+void endOfGame(int &tempEndOfHealth, char &charEndOfCont){
     string tempContinue         = "";
     cout << "Congratulations, you are victorious!!!  Would you like to play again? ";
     cin >> tempContinue;
-    GLOBAL_charContinue = returnChar(tempContinue);
+    charEndOfCont = returnChar(tempContinue);
     
-    if(GLOBAL_charContinue == 'Y'){
+    if(charEndOfCont == 'Y'){
         //tempEndOfHealth = 100;
     }
 }
 // END END OF GAME
 
 // BEGIN CHECK FOR DEAD
-void checkForDead(int &tempCheckHealth){
+void checkForDead(int &tempCheckHealth, char &charCheckForContinue){
     string isDead     = "";
-    if(GLOBAL_charContinue != 'Y'){
+    if(charCheckForContinue != 'Y'){
         cout << "You are dead, would you like to play again? ";
         cin >> isDead;
         isDead = returnChar(isDead);
@@ -155,7 +156,7 @@ void checkForDead(int &tempCheckHealth){
             exit(0);
         }
         else{
-            GLOBAL_charContinue = 'Y';
+            charCheckForContinue = 'Y';
             tempCheckHealth = 100;
         }
     }
@@ -174,7 +175,7 @@ void randomItem(int &intItemNumber){
 // END RANDOM ITEM
 
 // BEGIN FIRST ATTACK
-void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, char firstDirection, int &itemNumber){
+void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, char firstDirection, int &itemNumber, char &charFirstFightCont){
     int intTempAttack           = 0;
     if(attackFlee == 'F'){
         flee(firstCharHealth);
@@ -196,7 +197,7 @@ void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, ch
                     pause(1);
                 }
                 if(firstCharHealth <= 0){
-                    GLOBAL_charContinue = 'N';
+                    charFirstFightCont = 'N';
                 }
                 else{
                     cout << "You have killed the Butterfly.  ";
@@ -219,7 +220,7 @@ void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, ch
                     pause(1);
                 }
                 if(firstCharHealth <= 0){
-                    GLOBAL_charContinue = 'N';
+                    charFirstFightCont = 'N';
                 }
                 else{
                     cout << "You have killed the Wolf.  ";
@@ -242,7 +243,7 @@ void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, ch
                     pause(1);
                 }
                 if(firstCharHealth <= 0){
-                    GLOBAL_charContinue = 'N';
+                    charFirstFightCont = 'N';
                 }
                 else{
                     cout << "You have killed the Witch.  ";
@@ -265,7 +266,7 @@ void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, ch
                     pause(1);
                 }
                 if(firstCharHealth <= 0){
-                    GLOBAL_charContinue = 'N';
+                    charFirstFightCont = 'N';
                 }
                 else{
                     cout << "You have killed the Yeti.  ";

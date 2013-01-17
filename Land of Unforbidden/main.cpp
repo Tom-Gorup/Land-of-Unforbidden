@@ -385,52 +385,59 @@ char returnChar(string temporaryString)
 // BEGIN RETURN CHARACTER PICK
 string returnCharPick(int tempCharPick)
 {
-    string characterName    = "";
-    string characterSelect[9];
+    string giveCharName    = "";
     
-    if(((tempCharPick >= 1) && (tempCharPick <= 4)) || (tempCharPick == 9)){
-        characterSelect[1] = "Rogue";
-        characterSelect[2] = "Warrior";
-        characterSelect[3] = "Paladin";
-        characterSelect[4] = "Archer";
-        characterSelect[5] = "Not a Character";
-        characterSelect[6] = "Not a Character";
-        characterSelect[7] = "Not a Character";
-        characterSelect[8] = "Not a Character";
-        characterSelect[9] = "Cerberus";
-        characterName = characterSelect[tempCharPick];
-    }
-    else{
-        characterName = "N";
-    }
-    
-    return characterName;
+    switch (tempCharPick)
+    {
+        case 1 :
+            giveCharName = "Rogue";
+            break;
+        case 2 :
+            giveCharName = "Warrior.";
+            break;
+        case 3 :
+            giveCharName = "Paladin";
+            break;
+        case 4 :
+            giveCharName = "Archer";
+            break;
+        case 9 :
+            giveCharName = "Cerberus.";
+            break;
+        default:
+            giveCharName = "N";
+            break;
+    }    
+    return giveCharName;
 }
 // END RETURN CHARACTER PICK
 
 // BEGIN RETURN CHARACTER INFORMATION
 void returnCharInfo()
 {
-    string arrayCharInfo[9];
-    string giveInfo = "";
+    string giveInfo     = "";
     
-    arrayCharInfo[1] = "Information about the Rogue.";
-    arrayCharInfo[2] = "Information about the Warrior.";
-    arrayCharInfo[3] = "Information about the Paladin.";
-    arrayCharInfo[4] = "Information about the Archer.";
-    arrayCharInfo[5] = "Sorry, Not a valid character.";
-    arrayCharInfo[6] = "Sorry, Not a valid character.";
-    arrayCharInfo[7] = "Sorry, Not a valid character.";
-    arrayCharInfo[8] = "Sorry, Not a valid character.";
-    arrayCharInfo[9] = "Information about the Secret characater, Cerberus.";
-    
-    if((GLOBAL_intCharacterType >= 1) && (GLOBAL_intCharacterType <= 9)){
-        giveInfo = arrayCharInfo[GLOBAL_intCharacterType];
-    }
-    else{
-        giveInfo = "Looks like you haven't picked a valid character.2 ";
+    switch (GLOBAL_intCharacterType)
+    {
+        case 1 :
+            giveInfo = "Information about the Rogue";
+            break;
+        case 2 :
+            giveInfo = "Information about the Warrior.";
+            break;
+        case 3 :
+            giveInfo = "Information about the Paladin";
+            break;
+        case 4 :
+            giveInfo = "Information about the Archer";
+            break;
+        case 9 :
+            giveInfo = "Information about the secret character, Cerberus.";
+            break;
+        default:
+            giveInfo = "It appears you have pick an invalid character.";
+            break;
     }
     cout << giveInfo << endl;
-    //return giveInfo;
 }
 // END RETURN CHARACTER INFORMATION

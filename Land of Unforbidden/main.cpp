@@ -12,7 +12,6 @@
 using namespace std;
 
 //****Global Variables****
-//string  GLOBAL_arrayInventory[10];
 vector<string> vectorInvetory;
 
 //****Function Prototypes****
@@ -25,7 +24,7 @@ char    beginPath(char &);                              //Begin the Path
 char    whichDirection(char);                           //Pick the direction
 int     charAttack(int, int);                           //Character Attack
 void    flee(int &);                                    //Fleeing health reduction
-void    firstFight(char, int &, int &, char, int &, char &);    //First fight
+void    firstFight(char, int &, char, int &, char &);   //First fight
 void    randomItem(int &);                              //Random Item
 void    checkForDead(int &, char &);                    //Checks GLOBAL_charContinue for N and kills program if so
 void    endOfGame(int &, char &, char &, int &);        //End of game, checks if you want to play again
@@ -39,35 +38,34 @@ void    applyItem(int);                                 //Apply picked item and 
 
 int main()
 {
-    string  strCharacterType            = "";
-    int     intCharacterType            = 0;
-    string  characterName               = "";
-    char    charTemporary               = ' ';
-    int     charHealth                  = 100;
-    int     enemyHealth                 = 100;
-    char    charPathDirection           = ' ';
-    int     intItemNumber               = 0;
-    char    charContinue                = 'Y';
-    char    charNoReset                 = 'Y';
-    char    useItem                     = ' ';
-    int     useItemNum                  = 0;
+    string  strCharacterType            = "";           //Character name
+    int     intCharacterType            = 0;            //Character number
+    string  characterName               = "";           //Character name from user
+    char    charTemporary               = ' ';          //Attack or Flee
+    int     charHealth                  = 100;          //Characters Health
+    char    charPathDirection           = ' ';          //Direction picked, determines enemy
+    int     intItemNumber               = 0;            //Current item number
+    char    charContinue                = 'Y';          //Continue playing Y || N
+    char    charNoReset                 = 'Y';          //Reset character attributes
+    char    useItem                     = ' ';          //Use item in inventory Y || N
+    int     useItemNum                  = 0;            //Item number in inventory
     
     srand((unsigned)time(0));                           //initiate random number
     do{
         clearScreen();
         strCharacterType = characterSelect(intCharacterType);
-        characterName = nameCharacter();
+        characterName = nameCharacter();                //Ask for characters name
         cout << "The path of the " << strCharacterType << " is a unique path.  " << characterName << ", you have been selected to..." << endl;
         do{
             charTemporary = beginPath(charPathDirection);
-            firstFight(charTemporary, charHealth, enemyHealth, charPathDirection, intItemNumber, charContinue);
-            checkForDead(charHealth, charContinue);      //checks for death after fight
+            firstFight(charTemporary, charHealth, charPathDirection, intItemNumber, charContinue);
+            checkForDead(charHealth, charContinue);     //checks for death after fight
         
-            checkInventory(intItemNumber);
+            checkInventory(intItemNumber);              //Show current inventory
             
             useInventory(intItemNumber, useItemNum, useItem);
-            if(useItem == 'Y'){
-                applyItem(useItemNum);           // Will remove and apply item
+            if(useItem == 'Y'){                         //Use item from inventory Y || N
+                applyItem(useItemNum);                  //Will remove and apply item
             }
             
             endOfGame(charHealth, charContinue, charNoReset, intItemNumber);
@@ -222,7 +220,8 @@ void randomItem(int &intItemNumber){
 // END RANDOM ITEM
 
 // BEGIN FIRST ATTACK
-void firstFight(char attackFlee, int &firstCharHealth, int &firstEnemyHealth, char firstDirection, int &itemNumber, char &charFirstFightCont){
+void firstFight(char attackFlee, int &firstCharHealth, char firstDirection, int &itemNumber, char &charFirstFightCont){
+    int firstEnemyHealth        = 100;
     int intTempAttack           = 0;
     if(attackFlee == 'F'){
         flee(firstCharHealth);

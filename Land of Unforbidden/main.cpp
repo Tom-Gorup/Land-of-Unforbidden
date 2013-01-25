@@ -28,13 +28,13 @@ void    firstFight(char, int &, char, int &, char &);   //First fight
 void    randomItem(int &);                              //Random Item
 void    checkForDead(int &, char &);                    //Checks GLOBAL_charContinue for N and kills program if so
 void    endOfGame(int &, char &, char &, int &);        //End of game, checks if you want to play again
-void    addItem(string, int &);                         //Add item to array
+void    addItem(int &);                         //Add item to array
 void    checkInventory(int);                            //Display Inventory
 void    pause(int);                                     //Pause Function
 string  randomItemCreator();                            //Creates the random item
 void    clearScreen();                                  //Clears the screen
 void    useInventory(int, int &, char &);               //Select and use items in inventory
-void    applyItem(int, int &, int &, int &);                   //Apply picked item and remove from inventory
+void    applyItem(int, int &, int &, int &, int &);     //Apply picked item and remove from inventory
 
 int main()
 {
@@ -43,15 +43,15 @@ int main()
     string  characterName               = "";           //Character name from user
     char    charTemporary               = ' ';          //Attack or Flee
     int     charHealth                  = 100;          //Characters Health
+    int     charStrength                = 50;           //Characters Strength
+    int     charDexterity               = 50;           //Characters Dexterity
+    int     charVitality                = 50;           //Characters Vitality
     char    charPathDirection           = ' ';          //Direction picked, determines enemy
     int     intItemNumber               = 0;            //Current item number
     char    charContinue                = 'Y';          //Continue playing Y || N
     char    charNoReset                 = 'Y';          //Reset character attributes
     char    useItem                     = ' ';          //Use item in inventory Y || N
     int     useItemNum                  = 0;            //Item number in inventory
-    int     increaseStr                 = 0;            //Storage for increased str
-    int     increaseDex                 = 0;            //Storage for increased dex
-    int     increaseHealth              = 0;            //Storage for increased health
     
     srand((unsigned)time(0));                           //initiate random number
     do{
@@ -68,9 +68,9 @@ int main()
             
             useInventory(intItemNumber, useItemNum, useItem);
             if(useItem == 'Y'){                         //Use item from inventory Y || N
-                applyItem(useItemNum, increaseStr, increaseDex, increaseHealth);    //Will remove and apply item
-                cout << "Health: " << increaseHealth << " Strength: " << increaseStr
-                << " Dexterity: " << increaseDex << "\n"; //Testing attributes
+                applyItem(useItemNum, charStrength, charDexterity, charHealth, charVitality);   //Will remove and apply item
+                cout << "Health: " << charHealth << " Strength: " << charStrength
+                << " Dexterity: " << charDexterity << " Vitality: " << charVitality << "\n";    //Testing attributes
             }
             
             endOfGame(charHealth, charContinue, charNoReset, intItemNumber);
@@ -82,32 +82,32 @@ int main()
 //**** Functions ****
 
 // APPLY ITEM
-void applyItem(int tempItemNum, int &increaseStr, int &increaseDex, int &increaseHealth){
+void applyItem(int tempItemNum, int &increaseStr, int &increaseDex, int &increaseHealth, int &increaseVitality){
     string itemName = vectorInvetory[tempItemNum];
     cout << "Applying " << itemName << "\n";
     char charItemName = returnChar(itemName);
     
     switch(charItemName){
         case 'H':
-            increaseStr = 5;
+            increaseStr += 5;
             break;
         case 'S':
-            increaseStr = 7;
+            increaseStr += 7;
             break;
         case 'V':
-            increaseDex = 2;
+            increaseDex += 2;
             break;
         case 'B':
-            increaseStr = 3;
+            increaseStr += 3;
             break;
         case 'P':
-            increaseHealth = 5;
+            increaseHealth += 5;
             break;
         case 'L':
-            increaseHealth = 10;
+            increaseHealth += 10;
             break;
         case 'A':
-            increaseStr = 8;
+            increaseStr += 8;
             break;
         default:
             cout << "Invalid Item";
@@ -156,11 +156,11 @@ void clearScreen(){
 string randomItemCreator(){
     int randomItemSelector          = 0;
     string randomItemReturn         = "";
-    string  arrayItems[10]   = {""};
+    string  arrayItems[10]          = {""};
     
     arrayItems[0] = "Hammer +5 str";
     arrayItems[1] = "Sword +7 str";
-    arrayItems[2] = "Vasoline +2 dex";
+    arrayItems[2] = "Vasoline Bottle +2 dex";
     arrayItems[3] = "Bow +3 str";
     arrayItems[4] = "Pint of Health +5 health";
     arrayItems[5] = "Liter of Health +10 health";
@@ -170,7 +170,6 @@ string randomItemCreator(){
     randomItemReturn = arrayItems[randomItemSelector];
     
     vectorInvetory.push_back(randomItemReturn);
-    
     return randomItemReturn;
 }
 // END RANDOM ITEM CREATOR
@@ -193,9 +192,8 @@ void checkInventory(int intInventoryNum){
 // END CHECK INVENTORY
 
 // BEGIN ADD ITEM
-void addItem(string addedItem, int &addItemNumber){
+void addItem(int &addItemNumber){
     addItemNumber             += 1;
-    //GLOBAL_arrayInventory[addItemNumber] = addedItem;
 }
 // END ADD ITEM
 
@@ -210,7 +208,7 @@ void endOfGame(int &tempEndOfHealth, char &charEndOfCont, char &charSaveChar, in
     charEndOfCont = returnChar(tempContinue);
 
     if(charEndOfCont == 'Y'){
-        cout << "Would you like to save your current character (yes) or start fresh (no)? ";
+        cout << "Would you like to save your current character(yes) or start fresh(no)? ";
         cin >> tempSaveChar;
         charSaveChar = returnChar(tempSaveChar);
         
@@ -246,10 +244,9 @@ void checkForDead(int &tempCheckHealth, char &charCheckForContinue){
 
 // BEGIN RANDOM ITEM
 void randomItem(int &intItemNumber){
-    string tempRandNewItem  = "";
-    tempRandNewItem = randomItemCreator();
+    string tempRandNewItem  = randomItemCreator();
     cout << "You have earned a(n) " << tempRandNewItem << endl;
-    addItem(tempRandNewItem, intItemNumber);
+    addItem(intItemNumber);
 }
 // END RANDOM ITEM
 

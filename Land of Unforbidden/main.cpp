@@ -34,7 +34,8 @@ void    checkInventory(int);                            //Display Inventory
 void    pause(int);                                     //Pause Function
 string  randomItemCreator();                            //Creates the random item
 void    clearScreen();                                  //Clears the screen
-void     useInventory(int, string &);                    //Select and use items in inventory
+void    useInventory(int, int &, char &);               //Select and use items in inventory
+void    applyItem(int);                                 //Apply picked item and remove from inventory
 
 int main()
 {
@@ -48,7 +49,8 @@ int main()
     int     intItemNumber               = 0;
     char    charContinue                = 'Y';
     char    charNoReset                 = 'Y';
-    string  useItem                     = "";
+    char    useItem                     = ' ';
+    int     useItemNum                  = 0;
     
     srand((unsigned)time(0));                           //initiate random number
     do{
@@ -59,12 +61,14 @@ int main()
         do{
             charTemporary = beginPath(charPathDirection);
             firstFight(charTemporary, charHealth, enemyHealth, charPathDirection, intItemNumber, charContinue);
-            checkForDead(charHealth, charContinue);          //checks for death after fight
+            checkForDead(charHealth, charContinue);      //checks for death after fight
         
             checkInventory(intItemNumber);
             
-            useInventory(intItemNumber, useItem);
-            cout << "Using " << useItem << "." << "\n";
+            useInventory(intItemNumber, useItemNum, useItem);
+            if(useItem == 'Y'){
+                applyItem(useItemNum);           // Will remove and apply item
+            }
             
             endOfGame(charHealth, charContinue, charNoReset, intItemNumber);
         }   while(charNoReset == 'Y');
@@ -74,12 +78,18 @@ int main()
 
 //**** My Functions ****
 
+// APPLY ITEM
+void applyItem(int tempItemNum){
+    cout << "Applying " << vectorInvetory[tempItemNum] << "\n";
+    vectorInvetory.erase (vectorInvetory.begin()+tempItemNum);
+}
+// END APPLY ITEM
+
 // USE INVENTORY
-void useInventory(int curItemNumber, string &useThisItem){
+void useInventory(int curItemNumber, int &tempItemNum, char &useItem){
     string tempUseItem      = "";
-    char useItem            = 'Y';
     int pickedItemNumber    = 0;
-    int tempItemNum         = 0;
+    string useThisItem      = "";
 
     cout << "Would you like to use an item from your inventory? ";
     cin >> tempUseItem;
@@ -97,7 +107,6 @@ void useInventory(int curItemNumber, string &useThisItem){
         }
         useThisItem = vectorInvetory[curItemNumber - 1];
         tempItemNum = pickedItemNumber - 1;
-        //vectorInvetory.erase(vectorInvetory.begin()+tempItemNum);
     }
 }
 // END USE INVENTORY
@@ -115,18 +124,18 @@ void clearScreen(){
 string randomItemCreator(){
     int randomItemSelector          = 0;
     string randomItemReturn         = "";
-    string  GLOBAL_arrayItems[10]   = {""};
+    string  arrayItems[10]   = {""};
     
-    GLOBAL_arrayItems[0] = "Hammer";
-    GLOBAL_arrayItems[1] = "Sword";
-    GLOBAL_arrayItems[2] = "Vasoline";
-    GLOBAL_arrayItems[3] = "Bow";
-    GLOBAL_arrayItems[4] = "+5 Health";
-    GLOBAL_arrayItems[5] = "+10 Health";
-    GLOBAL_arrayItems[6] = "Axe";
+    arrayItems[0] = "Hammer";
+    arrayItems[1] = "Sword";
+    arrayItems[2] = "Vasoline";
+    arrayItems[3] = "Bow";
+    arrayItems[4] = "+5 Health";
+    arrayItems[5] = "+10 Health";
+    arrayItems[6] = "Axe";
     
     randomItemSelector = 0+ rand() % (6 - 0 + 1);
-    randomItemReturn = GLOBAL_arrayItems[randomItemSelector];
+    randomItemReturn = arrayItems[randomItemSelector];
     
     vectorInvetory.push_back(randomItemReturn);
     

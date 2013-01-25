@@ -7,11 +7,13 @@
 #include <string>
 #include <ctype.h>
 #include <cstdlib>
+#include <vector>
 
 using namespace std;
 
 //****Global Variables****
-string  GLOBAL_arrayInventory[10];
+//string  GLOBAL_arrayInventory[10];
+vector<string> vectorInvetory;
 
 //****Function Prototypes****
 char    returnChar(string);                             //Return Yes/No/Other to single character
@@ -26,7 +28,7 @@ void    flee(int &);                                    //Fleeing health reducti
 void    firstFight(char, int &, int &, char, int &, char &);    //First fight
 void    randomItem(int &);                              //Random Item
 void    checkForDead(int &, char &);                    //Checks GLOBAL_charContinue for N and kills program if so
-void    endOfGame(int &, char &);                       //End of game, checks if you want to play again
+void    endOfGame(int &, char &, char &, int &);                       //End of game, checks if you want to play again
 void    addItem(string, int &);                         //Add item to array
 void    checkInventory(int);                            //Display Inventory
 void    pause(int);                                     //Pause Function
@@ -44,7 +46,7 @@ int main()
     char    charPathDirection           = ' ';
     int     intItemNumber               = 0;
     char    charContinue                = 'Y';
-    //string  GLOBAL_arrayInventory[10]   = "";
+    char    charNoReset                 = 'Y';
     
     srand((unsigned)time(0));                           //initiate random number
     do{
@@ -52,13 +54,14 @@ int main()
         strCharacterType = characterSelect(intCharacterType);
         characterName = nameCharacter();
         cout << "The path of the " << strCharacterType << " is a unique path.  " << characterName << ", you have been selected to..." << endl;
-        
+        do{
         charTemporary = beginPath(charPathDirection);
         firstFight(charTemporary, charHealth, enemyHealth, charPathDirection, intItemNumber, charContinue);
         checkForDead(charHealth, charContinue);          //checks for death after fight
         
         checkInventory(intItemNumber);
-        endOfGame(charHealth, charContinue);
+        endOfGame(charHealth, charContinue, charNoReset, intItemNumber);
+        }   while(charNoReset == 'Y');
     }   while(charContinue == 'Y');
     return 0;
 }
@@ -91,6 +94,8 @@ string randomItemCreator(){
     randomItemSelector = 0+ rand() % (7 - 0 + 1);
     randomItemReturn = GLOBAL_arrayItems[randomItemSelector];
     
+    vectorInvetory.push_back(randomItemReturn);
+    
     return randomItemReturn;
 }
 // END RANDOM ITEM CREATOR
@@ -104,12 +109,10 @@ void pause(int dur){
 
 // BEGIN CHECK INVENTORY
 void checkInventory(int intInventoryNum){
-    //int tempItemNumber  = 0;
-    //tempItemNumber = GLOBAL_intItemNumber;
     cout << "Inventory:" << endl;
-    while(intInventoryNum > 0){
-        cout << GLOBAL_arrayInventory[intInventoryNum] << endl;
-        intInventoryNum -= 1;
+
+    for(int i = 0; i < intInventoryNum; i++){
+        cout << vectorInvetory[i] << "\n";
     }
 }
 // END CHECK INVENTORY
@@ -117,19 +120,33 @@ void checkInventory(int intInventoryNum){
 // BEGIN ADD ITEM
 void addItem(string addedItem, int &addItemNumber){
     addItemNumber             += 1;
-    GLOBAL_arrayInventory[addItemNumber] = addedItem;
+    //GLOBAL_arrayInventory[addItemNumber] = addedItem;
 }
 // END ADD ITEM
 
 // BEGIN END OF GAME
-void endOfGame(int &tempEndOfHealth, char &charEndOfCont){
+void endOfGame(int &tempEndOfHealth, char &charEndOfCont, char &charSaveChar, int &intItemNumber){
+    string tempSaveChar         = "";
     string tempContinue         = "";
+    
     cout << "Congratulations, you are victorious!!!  Would you like to play again? ";
     cin >> tempContinue;
+
     charEndOfCont = returnChar(tempContinue);
-    
+
     if(charEndOfCont == 'Y'){
-        //tempEndOfHealth = 100;
+        cout << "Would you like to save your current character (yes) or start fresh (no)? ";
+        cin >> tempSaveChar;
+        charSaveChar = returnChar(tempSaveChar);
+        
+        if(charSaveChar == 'N'){
+            tempEndOfHealth = 100;
+            vectorInvetory.clear();
+            intItemNumber = 0;
+        }
+    }
+    else{
+        charEndOfCont = 'N';
     }
 }
 // END END OF GAME
@@ -158,8 +175,6 @@ void randomItem(int &intItemNumber){
     tempRandNewItem = randomItemCreator();
     cout << "You have earned a(n) " << tempRandNewItem << endl;
     addItem(tempRandNewItem, intItemNumber);
-    
-    //return GLOBAL_tempNewItem;
 }
 // END RANDOM ITEM
 
@@ -292,7 +307,6 @@ int charAttack(int lowerStrength, int upperStrength){
 // BEGIN PATH DIRECTION
 char beginPath(char &charDirection){
     string direction        = "";
-    //char charDirection      = ' ';
     string attackFlee       = "";
     char charAttackFlee     = ' ';
     
@@ -302,7 +316,6 @@ char beginPath(char &charDirection){
             cin >> direction;
             charDirection = returnChar(direction);
             charDirection = whichDirection(charDirection);
-            //GLOBAL_charPathDirection = charDirection;
         }   while((charDirection != 'N') && (charDirection != 'S') && (charDirection != 'W') && (charDirection != 'E'));
         
         cout << "Attack or Flee? ";
@@ -438,7 +451,6 @@ void returnCharInfo(int tempCharacterType)
     arrayCharInfo[7] = "Sorry, Not a valid character.";
     arrayCharInfo[8] = "Sorry, Not a valid character.";
     arrayCharInfo[9] = "Information about the Secret characater, Cerberus.";
-    //cout << arrayCharInfo[intRetCharType];
     
     if(9 >= intRetCharType >= 1){
         giveInfo = arrayCharInfo[intRetCharType];
@@ -447,6 +459,5 @@ void returnCharInfo(int tempCharacterType)
         giveInfo = "Looks like you haven't picked a valid character.";
     }
     cout << giveInfo << endl;
-    //return giveInfo;
 }
 // END RETURN CHARACTER INFORMATION

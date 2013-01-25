@@ -34,7 +34,7 @@ void    pause(int);                                     //Pause Function
 string  randomItemCreator();                            //Creates the random item
 void    clearScreen();                                  //Clears the screen
 void    useInventory(int, int &, char &);               //Select and use items in inventory
-void    applyItem(int);                                 //Apply picked item and remove from inventory
+void    applyItem(int, int &, int &, int &);                   //Apply picked item and remove from inventory
 
 int main()
 {
@@ -49,6 +49,9 @@ int main()
     char    charNoReset                 = 'Y';          //Reset character attributes
     char    useItem                     = ' ';          //Use item in inventory Y || N
     int     useItemNum                  = 0;            //Item number in inventory
+    int     increaseStr                 = 0;            //Storage for increased str
+    int     increaseDex                 = 0;            //Storage for increased dex
+    int     increaseHealth              = 0;            //Storage for increased health
     
     srand((unsigned)time(0));                           //initiate random number
     do{
@@ -65,7 +68,9 @@ int main()
             
             useInventory(intItemNumber, useItemNum, useItem);
             if(useItem == 'Y'){                         //Use item from inventory Y || N
-                applyItem(useItemNum);                  //Will remove and apply item
+                applyItem(useItemNum, increaseStr, increaseDex, increaseHealth);    //Will remove and apply item
+                cout << "Health: " << increaseHealth << " Strength: " << increaseStr
+                << " Dexterity: " << increaseDex << "\n"; //Testing attributes
             }
             
             endOfGame(charHealth, charContinue, charNoReset, intItemNumber);
@@ -74,11 +79,40 @@ int main()
     return 0;
 }
 
-//**** My Functions ****
+//**** Functions ****
 
 // APPLY ITEM
-void applyItem(int tempItemNum){
-    cout << "Applying " << vectorInvetory[tempItemNum] << "\n";
+void applyItem(int tempItemNum, int &increaseStr, int &increaseDex, int &increaseHealth){
+    string itemName = vectorInvetory[tempItemNum];
+    cout << "Applying " << itemName << "\n";
+    char charItemName = returnChar(itemName);
+    
+    switch(charItemName){
+        case 'H':
+            increaseStr = 5;
+            break;
+        case 'S':
+            increaseStr = 7;
+            break;
+        case 'V':
+            increaseDex = 2;
+            break;
+        case 'B':
+            increaseStr = 3;
+            break;
+        case 'P':
+            increaseHealth = 5;
+            break;
+        case 'L':
+            increaseHealth = 10;
+            break;
+        case 'A':
+            increaseStr = 8;
+            break;
+        default:
+            cout << "Invalid Item";
+            break;
+    }
     vectorInvetory.erase (vectorInvetory.begin()+tempItemNum);
 }
 // END APPLY ITEM
@@ -124,13 +158,13 @@ string randomItemCreator(){
     string randomItemReturn         = "";
     string  arrayItems[10]   = {""};
     
-    arrayItems[0] = "Hammer";
-    arrayItems[1] = "Sword";
-    arrayItems[2] = "Vasoline";
-    arrayItems[3] = "Bow";
-    arrayItems[4] = "+5 Health";
-    arrayItems[5] = "+10 Health";
-    arrayItems[6] = "Axe";
+    arrayItems[0] = "Hammer +5 str";
+    arrayItems[1] = "Sword +7 str";
+    arrayItems[2] = "Vasoline +2 dex";
+    arrayItems[3] = "Bow +3 str";
+    arrayItems[4] = "Pint of Health +5 health";
+    arrayItems[5] = "Liter of Health +10 health";
+    arrayItems[6] = "Axe +8 str";
     
     randomItemSelector = 0+ rand() % (6 - 0 + 1);
     randomItemReturn = arrayItems[randomItemSelector];

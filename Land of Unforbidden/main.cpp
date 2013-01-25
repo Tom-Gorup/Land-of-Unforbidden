@@ -11,18 +11,6 @@
 using namespace std;
 
 //****Global Variables****
-//string  GLOBAL_strCharacterType         = "";
-//int     GLOBAL_intCharacterType         = 0;
-//string  GLOBAL_characterName            = "";
-//char    GLOBAL_charPathDirection        = ' ';
-//int     GLOBAL_charHealth               = 100;
-//int     GLOBAL_enemyHealth              = 100;
-//char    GLOBAL_charTemporary            = ' ';
-//int     GLOBAL_intTempAttack            = 0;
-//string  GLOBAL_arrayItems[10];
-//int     GLOBAL_intItemNumber            = 0;
-//string  GLOBAL_tempNewItem              = "";
-//char    GLOBAL_charContinue             = 'Y';
 string  GLOBAL_arrayInventory[10];
 
 //****Function Prototypes****
@@ -30,15 +18,15 @@ char    returnChar(string);                             //Return Yes/No/Other to
 string  returnCharPick(int);                            //Return Character type
 void    returnCharInfo(int);                            //Return Character Information
 string  nameCharacter();                                //Get characters name
-void    characterSelect(int &, string &);               //Main Character Selection Function
+string  characterSelect(int &);                         //Main Character Selection Function
 char    beginPath(char &);                              //Begin the Path
 char    whichDirection(char);                           //Pick the direction
 int     charAttack(int, int);                           //Character Attack
 void    flee(int &);                                    //Fleeing health reduction
 void    firstFight(char, int &, int &, char, int &, char &);    //First fight
 void    randomItem(int &);                              //Random Item
-void    checkForDead(int &, char &);                            //Checks GLOBAL_charContinue for N and kills program if so
-void    endOfGame(int &, char &);                               //End of game, checks if you want to play again
+void    checkForDead(int &, char &);                    //Checks GLOBAL_charContinue for N and kills program if so
+void    endOfGame(int &, char &);                       //End of game, checks if you want to play again
 void    addItem(string, int &);                         //Add item to array
 void    checkInventory(int);                            //Display Inventory
 void    pause(int);                                     //Pause Function
@@ -56,17 +44,18 @@ int main()
     char    charPathDirection           = ' ';
     int     intItemNumber               = 0;
     char    charContinue                = 'Y';
+    //string  GLOBAL_arrayInventory[10]   = "";
     
     srand((unsigned)time(0));                           //initiate random number
     do{
         clearScreen();
-        characterSelect(intCharacterType, strCharacterType);
+        strCharacterType = characterSelect(intCharacterType);
         characterName = nameCharacter();
         cout << "The path of the " << strCharacterType << " is a unique path.  " << characterName << ", you have been selected to..." << endl;
         
         charTemporary = beginPath(charPathDirection);
         firstFight(charTemporary, charHealth, enemyHealth, charPathDirection, intItemNumber, charContinue);
-        checkForDead(charHealth, charContinue);                       //checks for death after fight
+        checkForDead(charHealth, charContinue);          //checks for death after fight
         
         checkInventory(intItemNumber);
         endOfGame(charHealth, charContinue);
@@ -78,7 +67,7 @@ int main()
 
 // CLEAR SCREEN
 void clearScreen(){
-    for(int i = 0; i < 25; i++)                         //this will output 25 newline characters
+    for(int i = 0; i < 25; i++)                          //this will output 25 newline characters
     {
         cout << "\n";
     }
@@ -87,19 +76,19 @@ void clearScreen(){
 
 // BEGIN RANDOM ITEM CREATOR
 string randomItemCreator(){
-    int randomItemSelector  = 0;
-    string randomItemReturn = "";
-    string  GLOBAL_arrayItems[10];
+    int randomItemSelector          = 0;
+    string randomItemReturn         = "";
+    string  GLOBAL_arrayItems[10]   = {""};
     
-    GLOBAL_arrayItems[1] = "Hammer";
-    GLOBAL_arrayItems[2] = "Sword";
-    GLOBAL_arrayItems[3] = "Vasoline";
-    GLOBAL_arrayItems[4] = "Bow";
-    GLOBAL_arrayItems[5] = "+5 Health";
-    GLOBAL_arrayItems[6] = "+10 Health";
-    GLOBAL_arrayItems[7] = "Axe";
+    GLOBAL_arrayItems[0] = "Hammer";
+    GLOBAL_arrayItems[1] = "Sword";
+    GLOBAL_arrayItems[2] = "Vasoline";
+    GLOBAL_arrayItems[3] = "Bow";
+    GLOBAL_arrayItems[4] = "+5 Health";
+    GLOBAL_arrayItems[5] = "+10 Health";
+    GLOBAL_arrayItems[6] = "Axe";
     
-    randomItemSelector = 1 + rand() % (7 - 1 + 1);
+    randomItemSelector = 0+ rand() % (7 - 0 + 1);
     randomItemReturn = GLOBAL_arrayItems[randomItemSelector];
     
     return randomItemReturn;
@@ -359,7 +348,7 @@ string nameCharacter(){
 // END NAME CHARACTER FUNCTION
 
 // BEGIN MAIN CHARACTER SELECT FUNCTION
-void characterSelect(int &intSelectCharacterType, string &strSelectCharacterType){
+string characterSelect(int &intSelectCharacterType){
     
     string characterType    = "";
     char cAnswer            = 'N';
@@ -379,7 +368,6 @@ void characterSelect(int &intSelectCharacterType, string &strSelectCharacterType
         else{
             cout << "Are you sure you would like to be a(n) " << characterType << "?  Type 'info', for more information about your character, otherwise yes to continue: ";
             cin >> tempAnswer;
-            characterType = strSelectCharacterType;
             // Testing Function
             cAnswer = returnChar(tempAnswer);
             
@@ -391,6 +379,7 @@ void characterSelect(int &intSelectCharacterType, string &strSelectCharacterType
             }
         }
     }   while(cAnswer != 'Y');
+    return characterType;
 }
 // END MAIN CHARACTER SELECT FUNCTION
 

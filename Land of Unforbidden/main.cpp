@@ -28,12 +28,13 @@ void    flee(int &);                                    //Fleeing health reducti
 void    firstFight(char, int &, int &, char, int &, char &);    //First fight
 void    randomItem(int &);                              //Random Item
 void    checkForDead(int &, char &);                    //Checks GLOBAL_charContinue for N and kills program if so
-void    endOfGame(int &, char &, char &, int &);                       //End of game, checks if you want to play again
+void    endOfGame(int &, char &, char &, int &);        //End of game, checks if you want to play again
 void    addItem(string, int &);                         //Add item to array
 void    checkInventory(int);                            //Display Inventory
 void    pause(int);                                     //Pause Function
 string  randomItemCreator();                            //Creates the random item
 void    clearScreen();                                  //Clears the screen
+void     useInventory(int, string &);                    //Select and use items in inventory
 
 int main()
 {
@@ -47,6 +48,7 @@ int main()
     int     intItemNumber               = 0;
     char    charContinue                = 'Y';
     char    charNoReset                 = 'Y';
+    string  useItem                     = "";
     
     srand((unsigned)time(0));                           //initiate random number
     do{
@@ -55,18 +57,50 @@ int main()
         characterName = nameCharacter();
         cout << "The path of the " << strCharacterType << " is a unique path.  " << characterName << ", you have been selected to..." << endl;
         do{
-        charTemporary = beginPath(charPathDirection);
-        firstFight(charTemporary, charHealth, enemyHealth, charPathDirection, intItemNumber, charContinue);
-        checkForDead(charHealth, charContinue);          //checks for death after fight
+            charTemporary = beginPath(charPathDirection);
+            firstFight(charTemporary, charHealth, enemyHealth, charPathDirection, intItemNumber, charContinue);
+            checkForDead(charHealth, charContinue);          //checks for death after fight
         
-        checkInventory(intItemNumber);
-        endOfGame(charHealth, charContinue, charNoReset, intItemNumber);
+            checkInventory(intItemNumber);
+            
+            useInventory(intItemNumber, useItem);
+            cout << "Using " << useItem << "." << "\n";
+            
+            endOfGame(charHealth, charContinue, charNoReset, intItemNumber);
         }   while(charNoReset == 'Y');
     }   while(charContinue == 'Y');
     return 0;
 }
 
 //**** My Functions ****
+
+// USE INVENTORY
+void useInventory(int curItemNumber, string &useThisItem){
+    string tempUseItem      = "";
+    char useItem            = 'Y';
+    int pickedItemNumber    = 0;
+    int tempItemNum         = 0;
+
+    cout << "Would you like to use an item from your inventory? ";
+    cin >> tempUseItem;
+    useItem = returnChar(tempUseItem);
+    if(useItem == 'Y'){
+        for(int i=1; i<=curItemNumber; i++){
+            cout << i << ". " << vectorInvetory[i - 1] << "\n";
+        }
+
+        cout << "Which inventory number would you like to use? ";
+        cin >> pickedItemNumber;
+        while (pickedItemNumber > curItemNumber || pickedItemNumber - 1 < 0) {
+            cout << "Please pick a valid inventory number. ";
+            cin >> pickedItemNumber;
+        }
+        useThisItem = vectorInvetory[curItemNumber - 1];
+        tempItemNum = pickedItemNumber - 1;
+        //vectorInvetory.erase(vectorInvetory.begin()+tempItemNum);
+    }
+}
+// END USE INVENTORY
 
 // CLEAR SCREEN
 void clearScreen(){
@@ -91,7 +125,7 @@ string randomItemCreator(){
     GLOBAL_arrayItems[5] = "+10 Health";
     GLOBAL_arrayItems[6] = "Axe";
     
-    randomItemSelector = 0+ rand() % (7 - 0 + 1);
+    randomItemSelector = 0+ rand() % (6 - 0 + 1);
     randomItemReturn = GLOBAL_arrayItems[randomItemSelector];
     
     vectorInvetory.push_back(randomItemReturn);
@@ -332,10 +366,10 @@ char whichDirection(char charTempDirection){
     
     switch (charTempDirection) {
         case 'N':
-            cout << "Heading North, you have encouted a Butterfly! ";
+            cout << "Heading North, you have encountered a Butterfly! ";
             break;
         case 'S':
-            cout << "Heading South, you have encoutered a Wolf! ";
+            cout << "Heading South, you have encountered a Wolf! ";
             break;
         case 'W':
             cout << "Heading West, you have encountered a Witch! ";

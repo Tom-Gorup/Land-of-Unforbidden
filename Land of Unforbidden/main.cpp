@@ -12,8 +12,8 @@
 using namespace std;
 
 //****Global Variables****
-vector<string> vectorInvetory;
-int GLOBAL_arrayAttr[4] = {0};
+vector<string> vectorInvetory;                          //Vector of Inventory
+int GLOBAL_arrayAttr[4] = {0};                          //Array of attributes
 
 //****Function Prototypes****
 char    returnChar(string);                             //Return Yes/No/Other to single character
@@ -24,11 +24,11 @@ string  characterSelect(int &);                         //Main Character Selecti
 char    beginPath(char &);                              //Begin the Path
 char    whichDirection(char);                           //Pick the direction
 int     charAttack(int, int);                           //Character Attack
-void    flee();                                    //Fleeing health reduction
-void    firstFight(char, char, int &, char &);   //First fight
+void    flee();                                         //Fleeing health reduction
+void    firstFight(char, char, int &, char &);          //First fight
 void    randomItem(int &);                              //Random Item
 void    checkForDead(int &, char &);                    //Checks GLOBAL_charContinue for N and kills program if so
-void    endOfGame(char &, char &, int &);        //End of game, checks if you want to play again
+void    endOfGame(char &, char &, int &);               //End of game, checks if you want to play again
 void    addItem(int &);                                 //Add item to array
 void    checkInventory(int);                            //Display Inventory
 void    pause(int);                                     //Pause Function
@@ -65,8 +65,8 @@ int main()
             checkForDead(charHealth, charContinue);     //checks for death after fight
         
             checkInventory(intItemNumber);              //Show current inventory
-            useInventory(intItemNumber, useItem);
-            displayAttr();
+            useInventory(intItemNumber, useItem);       //Use inventory
+            displayAttr();                              //Display Attributes
             
             endOfGame(charContinue, charNoReset, intItemNumber);
         }   while(charNoReset == 'Y');

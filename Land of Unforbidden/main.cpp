@@ -13,6 +13,7 @@ using namespace std;
 
 //****Global Variables****
 vector<string> vectorInvetory;
+int GLOBAL_arrayAttr[4] = {0};
 
 //****Function Prototypes****
 char    returnChar(string);                             //Return Yes/No/Other to single character
@@ -23,18 +24,20 @@ string  characterSelect(int &);                         //Main Character Selecti
 char    beginPath(char &);                              //Begin the Path
 char    whichDirection(char);                           //Pick the direction
 int     charAttack(int, int);                           //Character Attack
-void    flee(int &);                                    //Fleeing health reduction
-void    firstFight(char, int &, char, int &, char &);   //First fight
+void    flee();                                    //Fleeing health reduction
+void    firstFight(char, char, int &, char &);   //First fight
 void    randomItem(int &);                              //Random Item
 void    checkForDead(int &, char &);                    //Checks GLOBAL_charContinue for N and kills program if so
-void    endOfGame(int &, char &, char &, int &);        //End of game, checks if you want to play again
-void    addItem(int &);                         //Add item to array
+void    endOfGame(char &, char &, int &);        //End of game, checks if you want to play again
+void    addItem(int &);                                 //Add item to array
 void    checkInventory(int);                            //Display Inventory
 void    pause(int);                                     //Pause Function
 string  randomItemCreator();                            //Creates the random item
 void    clearScreen();                                  //Clears the screen
-void    useInventory(int, int &, char &);               //Select and use items in inventory
-void    applyItem(int, int &, int &, int &, int &);     //Apply picked item and remove from inventory
+void    useInventory(int, char &);                      //Select and use items in inventory
+void    applyItem(int);                                 //Apply picked item and remove from inventory
+void    initialAttr(int);                               //Update attributes
+void    displayAttr();                                  //Display Attributes
 
 int main()
 {
@@ -43,37 +46,29 @@ int main()
     string  characterName               = "";           //Character name from user
     char    charTemporary               = ' ';          //Attack or Flee
     int     charHealth                  = 100;          //Characters Health
-    int     charStrength                = 50;           //Characters Strength
-    int     charDexterity               = 50;           //Characters Dexterity
-    int     charVitality                = 50;           //Characters Vitality
     char    charPathDirection           = ' ';          //Direction picked, determines enemy
     int     intItemNumber               = 0;            //Current item number
     char    charContinue                = 'Y';          //Continue playing Y || N
     char    charNoReset                 = 'Y';          //Reset character attributes
     char    useItem                     = ' ';          //Use item in inventory Y || N
-    int     useItemNum                  = 0;            //Item number in inventory
     
     srand((unsigned)time(0));                           //initiate random number
     do{
         clearScreen();
         strCharacterType = characterSelect(intCharacterType);
+        initialAttr(intCharacterType);
         characterName = nameCharacter();                //Ask for characters name
         cout << "The path of the " << strCharacterType << " is a unique path.  " << characterName << ", you have been selected to..." << endl;
         do{
             charTemporary = beginPath(charPathDirection);
-            firstFight(charTemporary, charHealth, charPathDirection, intItemNumber, charContinue);
+            firstFight(charTemporary, charPathDirection, intItemNumber, charContinue);
             checkForDead(charHealth, charContinue);     //checks for death after fight
         
             checkInventory(intItemNumber);              //Show current inventory
+            useInventory(intItemNumber, useItem);
+            displayAttr();
             
-            useInventory(intItemNumber, useItemNum, useItem);
-            if(useItem == 'Y'){                         //Use item from inventory Y || N
-                applyItem(useItemNum, charStrength, charDexterity, charHealth, charVitality);   //Will remove and apply item
-                cout << "Health: " << charHealth << " Strength: " << charStrength
-                << " Dexterity: " << charDexterity << " Vitality: " << charVitality << "\n";    //Testing attributes
-            }
-            
-            endOfGame(charHealth, charContinue, charNoReset, intItemNumber);
+            endOfGame(charContinue, charNoReset, intItemNumber);
         }   while(charNoReset == 'Y');
     }   while(charContinue == 'Y');
     return 0;
@@ -81,33 +76,80 @@ int main()
 
 //**** Functions ****
 
+void displayAttr(){
+    cout << "Health:     " << GLOBAL_arrayAttr[0] << "\n";
+    cout << "Strength:   " << GLOBAL_arrayAttr[1] << "\n";
+    cout << "Dexterity:  " << GLOBAL_arrayAttr[2] << "\n";
+    cout << "Vitality:   " << GLOBAL_arrayAttr[3] << "\n";
+}
+
+// INITALIZE ATTRIBUTES
+void initialAttr(int characterType){
+    switch(characterType){
+        case 1:     //Rogue
+            GLOBAL_arrayAttr[0] = 100;      //Health
+            GLOBAL_arrayAttr[1] = 30;       //Strength
+            GLOBAL_arrayAttr[2] = 60;       //Dexterity
+            GLOBAL_arrayAttr[3] = 60;       //Vitality
+            break;
+        case 2:     //Warrior
+            GLOBAL_arrayAttr[0] = 100;
+            GLOBAL_arrayAttr[1] = 70;
+            GLOBAL_arrayAttr[2] = 40;
+            GLOBAL_arrayAttr[3] = 40;
+            break;
+        case 3:     //Paladin
+            GLOBAL_arrayAttr[0] = 100;
+            GLOBAL_arrayAttr[1] = 45;
+            GLOBAL_arrayAttr[2] = 45;
+            GLOBAL_arrayAttr[3] = 60;
+            break;
+        case 4:     //Archer
+            GLOBAL_arrayAttr[0] = 100;
+            GLOBAL_arrayAttr[1] = 30;
+            GLOBAL_arrayAttr[2] = 55;
+            GLOBAL_arrayAttr[3] = 65;
+            break;
+        case 9:     //Cerberus
+            GLOBAL_arrayAttr[0] = 100;
+            GLOBAL_arrayAttr[1] = 90;
+            GLOBAL_arrayAttr[2] = 90;
+            GLOBAL_arrayAttr[3] = 30;
+            break;
+        default:
+            cout << "Invalid character, should make it this far.";
+            break;
+    }
+}
+// END INTIALIZE ATTRIBUTES
+
 // APPLY ITEM
-void applyItem(int tempItemNum, int &increaseStr, int &increaseDex, int &increaseHealth, int &increaseVitality){
+void applyItem(int tempItemNum){
     string itemName = vectorInvetory[tempItemNum];
     cout << "Applying " << itemName << "\n";
     char charItemName = returnChar(itemName);
     
     switch(charItemName){
         case 'H':
-            increaseStr += 5;
+            GLOBAL_arrayAttr[1] += 5;
             break;
         case 'S':
-            increaseStr += 7;
+            GLOBAL_arrayAttr[1] +=7;
             break;
         case 'V':
-            increaseDex += 2;
+            GLOBAL_arrayAttr[2] += 2;
             break;
         case 'B':
-            increaseStr += 3;
+            GLOBAL_arrayAttr[1] += 3;
             break;
         case 'P':
-            increaseHealth += 5;
+            GLOBAL_arrayAttr[0] += 5;
             break;
         case 'L':
-            increaseHealth += 10;
+            GLOBAL_arrayAttr[0] += 10;
             break;
         case 'A':
-            increaseStr += 8;
+            GLOBAL_arrayAttr[1] += 8;
             break;
         default:
             cout << "Invalid Item";
@@ -118,28 +160,35 @@ void applyItem(int tempItemNum, int &increaseStr, int &increaseDex, int &increas
 // END APPLY ITEM
 
 // USE INVENTORY
-void useInventory(int curItemNumber, int &tempItemNum, char &useItem){
+void useInventory(int curItemNumber, char &useItem){
     string tempUseItem      = "";
     int pickedItemNumber    = 0;
     string useThisItem      = "";
+    int tempItemNum         = 0;
 
     cout << "Would you like to use an item from your inventory? ";
     cin >> tempUseItem;
     useItem = returnChar(tempUseItem);
-    if(useItem == 'Y'){
-        for(int i=1; i<=curItemNumber; i++){
-            cout << i << ". " << vectorInvetory[i - 1] << "\n";
-        }
+    do{
+        if(useItem == 'Y'){
+            for(int i=1; i<=curItemNumber; i++){
+                cout << i << ". " << vectorInvetory[i - 1] << "\n";
+            }
 
-        cout << "Which inventory number would you like to use? ";
-        cin >> pickedItemNumber;
-        while (pickedItemNumber > curItemNumber || pickedItemNumber - 1 < 0) {
-            cout << "Please pick a valid inventory number. ";
+            cout << "Which inventory number would you like to use? ";
             cin >> pickedItemNumber;
+            while (pickedItemNumber > curItemNumber || pickedItemNumber - 1 < 0) {
+                cout << "Please pick a valid inventory number. ";
+                cin >> pickedItemNumber;
+            }
+            useThisItem = vectorInvetory[curItemNumber - 1];
+            tempItemNum = pickedItemNumber - 1;
+            applyItem(tempItemNum);
+            cout << "Would you like to use another item? ";
+            cin >> tempUseItem;
+            useItem = returnChar(tempUseItem);
         }
-        useThisItem = vectorInvetory[curItemNumber - 1];
-        tempItemNum = pickedItemNumber - 1;
-    }
+    }   while(useItem == 'Y');
 }
 // END USE INVENTORY
 
@@ -198,7 +247,7 @@ void addItem(int &addItemNumber){
 // END ADD ITEM
 
 // BEGIN END OF GAME
-void endOfGame(int &tempEndOfHealth, char &charEndOfCont, char &charSaveChar, int &intItemNumber){
+void endOfGame(char &charEndOfCont, char &charSaveChar, int &intItemNumber){
     string tempSaveChar         = "";
     string tempContinue         = "";
     
@@ -213,7 +262,6 @@ void endOfGame(int &tempEndOfHealth, char &charEndOfCont, char &charSaveChar, in
         charSaveChar = returnChar(tempSaveChar);
         
         if(charSaveChar == 'N'){
-            tempEndOfHealth = 100;
             vectorInvetory.clear();
             intItemNumber = 0;
         }
@@ -251,29 +299,29 @@ void randomItem(int &intItemNumber){
 // END RANDOM ITEM
 
 // BEGIN FIRST ATTACK
-void firstFight(char attackFlee, int &firstCharHealth, char firstDirection, int &itemNumber, char &charFirstFightCont){
+void firstFight(char attackFlee, char firstDirection, int &itemNumber, char &charFirstFightCont){
     int firstEnemyHealth        = 100;
     int intTempAttack           = 0;
     if(attackFlee == 'F'){
-        flee(firstCharHealth);
+        flee();
     }
     else if(attackFlee == 'A'){
         switch (firstDirection) {
             case 'N':
                 firstEnemyHealth *= .10;
                 cout << "The Butterfly has " << firstEnemyHealth << " health." << endl;
-                while ((firstEnemyHealth > 0) && (firstCharHealth > 0)) {
+                while ((firstEnemyHealth > 0) && (GLOBAL_arrayAttr[0] > 0)) {
                     intTempAttack = charAttack(1, 3);
                     cout << "Butterfly attacks with " << intTempAttack << "." << endl;
-                    firstCharHealth -= intTempAttack;
-                    cout << "Your health is now " << firstCharHealth << "." << endl;
+                    GLOBAL_arrayAttr[0] -= intTempAttack;
+                    cout << "Your health is now " << GLOBAL_arrayAttr[0] << "." << endl;
                     intTempAttack = charAttack(1, 10);
                     cout << "You attack with " << intTempAttack << "." << endl;
                     firstEnemyHealth -= intTempAttack;
                     cout << "The Butterfly has " << firstEnemyHealth << " health." << endl;
                     pause(1);
                 }
-                if(firstCharHealth <= 0){
+                if(GLOBAL_arrayAttr[0] <= 0){
                     charFirstFightCont = 'N';
                 }
                 else{
@@ -285,18 +333,18 @@ void firstFight(char attackFlee, int &firstCharHealth, char firstDirection, int 
             case 'S':
                 firstEnemyHealth *= .35;
                 cout << "The Wolf has " << firstEnemyHealth << " health." << endl;
-                while ((firstEnemyHealth > 0) && (firstCharHealth > 0)) {
+                while ((firstEnemyHealth > 0) && (GLOBAL_arrayAttr[0] > 0)) {
                     intTempAttack = charAttack(1, 4);
                     cout << "Wolf attacks with " << intTempAttack << "." << endl;
-                    firstCharHealth -= intTempAttack;
-                    cout << "Your health is now " << firstCharHealth << "." << endl;
+                    GLOBAL_arrayAttr[0] -= intTempAttack;
+                    cout << "Your health is now " << GLOBAL_arrayAttr[0] << "." << endl;
                     intTempAttack = charAttack(1, 10);
                     cout << "You attack with " << intTempAttack << "." << endl;
                     firstEnemyHealth -= intTempAttack;
                     cout << "The Wolf has " << firstEnemyHealth << " health." << endl;
                     pause(1);
                 }
-                if(firstCharHealth <= 0){
+                if(GLOBAL_arrayAttr[0] <= 0){
                     charFirstFightCont = 'N';
                 }
                 else{
@@ -308,18 +356,18 @@ void firstFight(char attackFlee, int &firstCharHealth, char firstDirection, int 
             case 'W':
                 firstEnemyHealth *= .60;
                 cout << "The Witch has " << firstEnemyHealth << " health." << endl;
-                while ((firstEnemyHealth > 0) && (firstCharHealth > 0)) {
+                while ((firstEnemyHealth > 0) && (GLOBAL_arrayAttr[0] > 0)) {
                     intTempAttack = charAttack(1, 5);
                     cout << "Witch attacks with " << intTempAttack << "." << endl;
-                    firstCharHealth -= intTempAttack;
-                    cout << "Your health is now " << firstCharHealth << "." << endl;
+                    GLOBAL_arrayAttr[0] -= intTempAttack;
+                    cout << "Your health is now " << GLOBAL_arrayAttr[0] << "." << endl;
                     intTempAttack = charAttack(1, 10);
                     cout << "You attack with " << intTempAttack << "." << endl;
                     firstEnemyHealth -= intTempAttack;
                     cout << "The Witch has " << firstEnemyHealth << " health." << endl;
                     pause(1);
                 }
-                if(firstCharHealth <= 0){
+                if(GLOBAL_arrayAttr[0] <= 0){
                     charFirstFightCont = 'N';
                 }
                 else{
@@ -331,18 +379,18 @@ void firstFight(char attackFlee, int &firstCharHealth, char firstDirection, int 
             case 'E':
                 firstEnemyHealth *= .80;
                 cout << "The Yeti has " << firstEnemyHealth << " health." << endl;
-                while ((firstEnemyHealth > 0) && (firstCharHealth > 0)) {
+                while ((firstEnemyHealth > 0) && (GLOBAL_arrayAttr[0] > 0)) {
                     intTempAttack = charAttack(1, 8);
                     cout << "Yeti attacks with " << intTempAttack << "." << endl;
-                    firstCharHealth -= intTempAttack;
-                    cout << "Your health is now " << firstCharHealth << "." << endl;
+                    GLOBAL_arrayAttr[0] -= intTempAttack;
+                    cout << "Your health is now " << GLOBAL_arrayAttr[0] << "." << endl;
                     intTempAttack = charAttack(1, 10);
                     cout << "You attack with " << intTempAttack << "." << endl;
                     firstEnemyHealth -= intTempAttack;
                     cout << "The Yeti has " << firstEnemyHealth << " health." << endl;
                     pause(1);
                 }
-                if(firstCharHealth <= 0){
+                if(GLOBAL_arrayAttr[0] <= 0){
                     charFirstFightCont = 'N';
                 }
                 else{
@@ -363,9 +411,9 @@ void firstFight(char attackFlee, int &firstCharHealth, char firstDirection, int 
 // END FIRST ATTACK
 
 // BEGIN FLEEING FUNCTION
-void flee(int &fleeHealth){
-    fleeHealth = fleeHealth * .95;
-    cout << "You take a 5% hit for fleeing, your health is now " << fleeHealth << endl;
+void flee(){
+    GLOBAL_arrayAttr[0] = GLOBAL_arrayAttr[0] * .95;
+    cout << "You take a 5% hit for fleeing, your health is now " << GLOBAL_arrayAttr[0] << endl;
 }
 // END FLEEING FUNCTION
 

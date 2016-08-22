@@ -14,6 +14,7 @@ using namespace std;
 //****Global Variables****
 vector<string> vectorInvetory;                          //Vector of Inventory
 int GLOBAL_arrayAttr[4] = {0};                          //Array of attributes
+int GLOBAL_intCharacterType = 0;
 
 //****Function Prototypes****
 char    returnChar(string);                             //Return Yes/No/Other to single character
@@ -585,9 +586,9 @@ void returnCharInfo(int tempCharacterType)
         default:
             giveInfo = "It appears you have pick an invalid character.";
             break;
-            
+    }
     string arrayCharInfo[9];
-    string giveInfo = "";
+    giveInfo = "";
     int intRetCharType = tempCharacterType;
     
     arrayCharInfo[1] = "Information about the Rogue.";

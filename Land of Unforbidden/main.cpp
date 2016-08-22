@@ -563,7 +563,6 @@ string returnCharPick(int tempCharPick)
 // BEGIN RETURN CHARACTER INFORMATION
 void returnCharInfo(int tempCharacterType)
 {
-<<<<<<< HEAD
     string giveInfo     = "";
     
     switch (GLOBAL_intCharacterType)
@@ -586,7 +585,7 @@ void returnCharInfo(int tempCharacterType)
         default:
             giveInfo = "It appears you have pick an invalid character.";
             break;
-=======
+            
     string arrayCharInfo[9];
     string giveInfo = "";
     int intRetCharType = tempCharacterType;
@@ -606,7 +605,6 @@ void returnCharInfo(int tempCharacterType)
     }
     else{
         giveInfo = "Looks like you haven't picked a valid character.";
->>>>>>> 993d01ea4a89793c78863c9535a6947bec122890
     }
     cout << giveInfo << endl;
 }
